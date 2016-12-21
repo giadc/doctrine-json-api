@@ -1,0 +1,28 @@
+Giadc\DoctrineJsonApi\Tests\ExampleEntity:
+    type: entity
+    table: example_entities
+    id:
+        id:
+            type: string
+            length: 2
+            generator:
+                strategy: NONE
+    fields:
+        name:
+            type: string
+            column: name
+            length: 255
+        width:
+            type: integer
+            column: width
+        height:
+            type: integer
+            column: height
+        runDate:
+            type: datetime
+            column: run_date
+    oneToMany:
+        relationships:
+            targetEntity: Giadc\DoctrineJsonApi\Tests\ExampleRelationshipEntity
+            mappedBy: parent
+            cascade: ["PERSIST"]

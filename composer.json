@@ -1,0 +1,32 @@
+{
+    "name": "giadc/json-api-request",
+    "description": "A package for handling JSON API requests with Doctrine",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "David Hill",
+            "email": "dhill2@gannett.com"
+        },
+        {
+            "name": "Ryan Marganti",
+            "email": "rmarganti@gannett.com"
+        }
+    ],
+    "require": {
+        "giadc/json-api-request": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.6",
+        "mockery/mockery": "^0.9.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Giadc\\DoctrineJsonApi\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/"
+        ]
+    }
+}

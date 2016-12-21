@@ -1,0 +1,16 @@
+Giadc\DoctrineJsonApi\Tests\ExampleRelationshipEntity:
+    type: entity
+    table: example_relationship_entities
+    id:
+        id:
+            type: string
+            length: 2
+            generator:
+                strategy: NONE
+    manyToOne:
+        parent:
+            targetEntity: Giadc\DoctrineJsonApi\Tests\ExampleEntity
+            inversedBy: relationships
+            joinColumn:
+                name: parent_id
+                referencedColumnName: id
