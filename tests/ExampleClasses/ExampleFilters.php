@@ -1,5 +1,4 @@
 <?php
-
 namespace Giadc\DoctrineJsonApi\Tests;
 
 use Giadc\DoctrineJsonApi\Filters\FilterManager;

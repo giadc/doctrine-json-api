@@ -8,7 +8,6 @@ use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\Serializer\JsonApiSerializer;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class AbstractReadService
 {
@@ -52,7 +51,7 @@ abstract class AbstractReadService
         $entity = $this->repo->findById($id, $includes);
 
         if (!$entity) {
-            throw new NotFoundHttpException("The requested {$this->entityReadableName} was not found.");
+            return null;
         }
 
         return $entity;

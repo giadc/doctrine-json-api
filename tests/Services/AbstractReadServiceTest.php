@@ -6,7 +6,6 @@ use Giadc\DoctrineJsonApi\Tests\ExampleEntity;
 use Giadc\DoctrineJsonApi\Tests\ExampleFilters;
 use Giadc\DoctrineJsonApi\Tests\ExampleReadService;
 use Giadc\DoctrineJsonApi\Tests\ExampleRepository;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AbstractReadServiceTest extends DoctrineJsonApiTestCase
 {
@@ -29,8 +28,8 @@ class AbstractReadServiceTest extends DoctrineJsonApiTestCase
 
     public function test_it_throws_an_exception_when_a_find_by_id_fails()
     {
-        $this->expectException(NotFoundHttpException::class);
         $result = $this->exampleReadService->findById('qq');
+        $this->assertEquals($result, null);
     }
 
     public function test_it_finds_entities_by_array()

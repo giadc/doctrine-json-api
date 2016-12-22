@@ -6,9 +6,9 @@ use Giadc\DoctrineJsonApi\Repositories\Processors;
 use Giadc\JsonApiRequest\Requests\Filters;
 
 /**
- * Class DoctrineFilterManagaer
+ * Class FilterManager
  */
-abstract class FilterManagaer
+abstract class FilterManager
 {
     use Processors;
 
