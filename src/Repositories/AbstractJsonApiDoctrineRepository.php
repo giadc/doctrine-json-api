@@ -2,7 +2,7 @@
 namespace Giadc\DoctrineJsonApi\Repositories;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Giadc\DoctrineJsonApi\Repositories\DoctrineProcessors;
+use Giadc\DoctrineJsonApi\Repositories\Processors;
 use Giadc\JsonApiRequest\Requests\Filters;
 use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\Pagination;
@@ -10,7 +10,7 @@ use Giadc\JsonApiRequest\Requests\Sorting;
 
 abstract class AbstractJsonApiDoctrineRepository
 {
-    use DoctrineProcessors;
+    use Processors;
 
     protected $class;
 

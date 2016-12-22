@@ -7,7 +7,7 @@ use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\Pagination;
 use Giadc\JsonApiRequest\Requests\Sorting;
 
-trait DoctrineProcessors
+trait Processors
 {
     /**
      * Add SELECT and LEFT JOIN statements for all includes

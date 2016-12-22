@@ -8,7 +8,7 @@ class EntityManagerFactory
     /**
      * Create an EntityManager
      *
-     * @return EntityManger
+     * @return EntityManager
      */
     public static function createEntityManager()
     {
