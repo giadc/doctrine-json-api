@@ -6,6 +6,7 @@ use Giadc\DoctrineJsonApi\Repositories\Processors;
 use Giadc\JsonApiRequest\Requests\Filters;
 use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\Pagination;
+use Giadc\JsonApiRequest\Requests\RequestParams;
 use Giadc\JsonApiRequest\Requests\Sorting;
 
 abstract class AbstractJsonApiDoctrineRepository
@@ -27,27 +28,26 @@ abstract class AbstractJsonApiDoctrineRepository
     /**
      * Paginate entities with Includes, Sorting, and Filters
      *
-     * @param  Pagination $page
-     * @param  Includes   $includes
-     * @param  Sorting    $sort
-     * @param  Filters    $filters
+     * @param  RequestParams $params
+     * @param  array $additionalIncludes
      * @return Doctrine\ORM\Tools\Pagination\Paginator
      */
-    public function paginateAll(Pagination $page, Includes $includes, Sorting $sort, Filters $filters)
+    public function paginateAll(RequestParams $params, $additionalIncludes = [])
     {
         $qb = $this->em->createQueryBuilder();
+        $includes = $params->getIncludes();
+        $includes->add($additionalIncludes);
 
-        $qb->select('e')
-            ->from($this->class, 'e');
+        $qb->select('e') ->from($this->class, 'e');
 
-        $qb = $this->processSorting($qb, $sort);
+        $qb = $this->processSorting($qb, $params->getSortDetails());
         $qb = $this->processIncludes($qb, $includes);
 
-        if (isset($this->filters)) {
-            $qb = $this->filters->process($qb, $filters);
+        if ($params->getFiltersDetails() == null) {
+            $qb = $this->filters->process($qb, $params->getFiltersDetails());
         }
 
-        return $this->paginate($qb, $page);
+        return $this->paginate($qb, $params->getPageDetails());
     }
 
     /**
@@ -138,7 +138,6 @@ abstract class AbstractJsonApiDoctrineRepository
     public function update($entity, $mute = false)
     {
         $this->isValidEntity($entity);
-
         $this->em->merge($entity);
 
         if (!$mute) {
@@ -155,7 +154,6 @@ abstract class AbstractJsonApiDoctrineRepository
     public function add($entity, $mute = false)
     {
         $this->isValidEntity($entity);
-
         $this->em->persist($entity);
 
         if (!$mute) {
@@ -173,7 +171,6 @@ abstract class AbstractJsonApiDoctrineRepository
     public function delete($entity, $mute = false)
     {
         $this->isValidEntity($entity);
-
         $this->em->remove($entity);
 
         if (!$mute) {

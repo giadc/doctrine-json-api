@@ -41,29 +41,4 @@ JsonApiInterface
         $this->class   = ExampleEntity::class;
         $this->filters = $filters;
     }
-
-    /**
-     * Get all Entities
-     *
-     * @param  Includes $includes
-     * @param  Sorting  $sort
-     * @param  Filters  $filters
-     * @return array
-     */
-    public function all(Includes $includes, Sorting $sort, Filters $filters)
-    {
-        $qb = $this->em->createQueryBuilder();
-
-        $qb->select('e')
-            ->from($this->class, 'e');
-
-        $qb = $this->processSorting($qb, $sort);
-        $qb = $this->processIncludes($qb, $includes);
-
-        if (isset($this->filters)) {
-            $qb = $this->filters->process($qb, $filters);
-        }
-
-        return new ArrayCollection($qb->getQuery()->getResult());
-    }
 }

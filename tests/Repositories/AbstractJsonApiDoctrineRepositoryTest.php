@@ -2,13 +2,14 @@
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Giadc\JsonApiRequest\Requests\Filters;
-use Giadc\JsonApiRequest\Requests\Includes;
-use Giadc\JsonApiRequest\Requests\Pagination;
-use Giadc\JsonApiRequest\Requests\Sorting;
 use Giadc\DoctrineJsonApi\Tests\ExampleEntity;
 use Giadc\DoctrineJsonApi\Tests\ExampleFilters;
 use Giadc\DoctrineJsonApi\Tests\ExampleRepository;
+use Giadc\JsonApiRequest\Requests\Filters;
+use Giadc\JsonApiRequest\Requests\Includes;
+use Giadc\JsonApiRequest\Requests\Pagination;
+use Giadc\JsonApiRequest\Requests\RequestParams;
+use Giadc\JsonApiRequest\Requests\Sorting;
 use Mockery as m;
 
 class AbstractJsonApiDoctrineRepositoryTest extends \DoctrineJsonApiTestCase
@@ -22,18 +23,20 @@ class AbstractJsonApiDoctrineRepositoryTest extends \DoctrineJsonApiTestCase
 
     public function test_it_returns_paginated_results()
     {
-        $pagination = m::mock(Pagination::class)
-            ->shouldReceive('getOffset')->andReturn(0)
-            ->shouldReceive('getPageSize')->andReturn(15)
-            ->getMock();
-
-        $includes = m::mock(Includes::class)->shouldReceive('toArray')->andReturn([])->getMock();
+        $pagination = m::mock(Pagination::class) ->shouldReceive('getOffset')->andReturn(0) ->shouldReceive('getPageSize')->andReturn(15) ->getMock();
+        $includes = m::mock(Includes::class)->shouldReceive('add')->shouldReceive('toArray')->andReturn([])->getMock();
         $sorting  = m::mock(Sorting::class)->shouldReceive('toArray')->andReturn([])->getMock();
         $filters  = m::mock(Filters::class)->shouldReceive('toArray')->andReturn([])->getMock();
 
-        $results = $this->exampleRepository->paginateAll(
-            $pagination, $includes, $sorting, $filters
-        );
+        $params = m::mock(RequestParams::class)
+            ->shouldReceive('toArray')->andReturn([])
+            ->shouldReceive('getIncludes')->andReturn($includes)
+            ->shouldReceive('getFiltersDetails')->andReturn($filters)
+            ->shouldReceive('getSortDetails')->andReturn($sorting)
+            ->shouldReceive('getPageDetails')->andReturn($pagination)
+            ->getMock();
+
+        $results = $this->exampleRepository->paginateAll($params);
 
         $this->assertInstanceOf(Paginator::class, $results);
     }

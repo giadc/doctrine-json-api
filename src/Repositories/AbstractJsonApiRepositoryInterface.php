@@ -4,11 +4,12 @@ namespace Giadc\DoctrineJsonApi\Interfaces;
 use Giadc\JsonApiRequest\Requests\Filters;
 use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\Pagination;
+use Giadc\JsonApiRequest\Requests\RequestParams;
 use Giadc\JsonApiRequest\Requests\Sorting;
 
 interface AbstractJsonApiRepositoryInterface
 {
-    public function paginateAll(Pagination $page, Includes $includes, Sorting $sort, Filters $filters);
+    public function paginateAll(RequestParams $params, $additionalIncludes = []);
     public function findById($value, Includes $includes);
     public function findByField($value, $field, Includes $includes);
     public function findByArray($array, $column = 'id', Includes $includes);

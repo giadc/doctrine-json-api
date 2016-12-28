@@ -29,7 +29,7 @@ class AbstractReadServiceTest extends DoctrineJsonApiTestCase
     public function test_it_throws_an_exception_when_a_find_by_id_fails()
     {
         $result = $this->exampleReadService->findById('qq');
-        $this->assertEquals($result, null);
+        $this->assertNull($result, null);
     }
 
     public function test_it_finds_entities_by_array()
@@ -58,12 +58,5 @@ class AbstractReadServiceTest extends DoctrineJsonApiTestCase
         $result = $this->exampleReadService->paginate(['relationships']);
         $this->assertInstanceOf(Paginator::class, $result);
         $this->assertEquals(5, $result->count());
-    }
-
-    public function test_it_returns_all_entities()
-    {
-        $result = $this->exampleReadService->all(['relationships']);
-        $this->assertInstanceOf(ArrayCollection::class, $result);
-        $this->assertTrue($result->first()->getRelationships()->isInitialized());
     }
 }
