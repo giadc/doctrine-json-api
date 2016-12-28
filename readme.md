@@ -2,12 +2,58 @@
 A package for automating pagination, filtering, sorting, and includes when working with 
 [Doctrine](http://www.doctrine-project.org/) and the [JSON API](http://jsonapi.org/) standard.
 
-
 ## Installation
-`composer install giadc/json-api-request`
-
+`composer install giadc/doctrine-json-api`
 
 ## Basic Usage
+
+### Using the Read Service
+```php
+$entityReadService->findById('id123', $includes = []);
+$entityReadService->findByArray(['id123', 'id456'], 'id', $includes = []);
+$entityReadService->findByField('name', 'Chiquita');
+$entityReadService->paginate($includes = []);
+```
+
+```php
+<?php
+namespace App\Bananas\Services;
+
+use App\Common\Services\AbstractReadService;
+use App\Bananas\Repositories\BananaRepositoryInterface as BananaRepo;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+class RoleReadService extends AbstractReadService
+{
+    public function __construct(
+        BananaRepo $bananaRepo
+    ) {
+        $this->initialize($bananaRepo, 'Banana');
+    }
+```
+
+### Filters Skeleton
+```php
+<?php
+
+namespace App\Bananas\Filters;
+
+use Giadc\DoctrineJsonApi\Filters\FilterManager;
+
+/**
+ * Class BananaFilters
+ */
+class BananaFilter extends FilterManager
+{
+    /**
+     * @var array
+     */
+    protected $accepted = [
+        'id'    => ['type' => 'id'],      // id must match exactly
+        'name' => ['type' => 'keyword'], // keyword will match fuzzily
+    ];
+}
+```
 
 ### Repository Skeleton
 ```php
@@ -47,54 +93,5 @@ RoleRepositoryInterface
         $this->class   = Role::class;
         $this->filters = $filters;
     }
-}
-```
-
-### Read Service Skeleton
-```php
-<?php
-namespace App\Bananas\Services;
-
-use App\Common\Services\AbstractReadService;
-use App\Bananas\Repositories\BananaRepositoryInterface as BananaRepo;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
-class RoleReadService extends AbstractReadService
-{
-    public function __construct(
-        BananaRepo $bananaRepo
-    ) {
-        $this->initialize($bananaRepo, 'Banana');
-    }
-```
-
-### Using the Read Service
-```php
-$bananaReadService->findById('id123', $includes = []);
-$bananaReadService->findByArray(['id123', 'id456'], 'id', $includes = []);
-$bananaReadService->findByField('name', 'Chiquita');
-$bananaReadService->paginate($includes = []);
-```
-
-### Filters Skeleton
-```php
-<?php
-
-namespace App\Bananas\Filters;
-
-use Giadc\DoctrineJsonApi\Filters\FilterManager;
-
-/**
- * Class BananaFilters
- */
-class BananaFilter extends FilterManager
-{
-    /**
-     * @var array
-     */
-    protected $accepted = [
-        'id'    => ['type' => 'id'],      // id must match exactly
-        'name' => ['type' => 'keyword'], // keyword will match fuzzily
-    ];
 }
 ```
