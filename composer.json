@@ -14,7 +14,7 @@
     ],
     "require": {
         "doctrine/orm": "2.5.*",
-        "giadc/json-api-request": "1.0.x-dev"
+        "giadc/json-api-request": "1.0.*"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.6",

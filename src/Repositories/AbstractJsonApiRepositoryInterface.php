@@ -1,5 +1,5 @@
 <?php
-namespace Giadc\DoctrineJsonApi\Interfaces;
+namespace Giadc\DoctrineJsonApi\Repositories;
 
 use Giadc\JsonApiRequest\Requests\Filters;
 use Giadc\JsonApiRequest\Requests\Includes;

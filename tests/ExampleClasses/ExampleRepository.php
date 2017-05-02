@@ -1,10 +1,9 @@
 <?php
-
 namespace Giadc\DoctrineJsonApi\Tests;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
-use Giadc\DoctrineJsonApi\Interfaces\AbstractJsonApiRepositoryInterface as JsonApiInterface;
+use Giadc\DoctrineJsonApi\Repositories\AbstractJsonApiRepositoryInterface as JsonApiInterface;
 use Giadc\DoctrineJsonApi\Repositories\AbstractJsonApiDoctrineRepository as JsonApiRepository;
 use Giadc\JsonApiRequest\Requests\Filters;
 use Giadc\JsonApiRequest\Requests\Includes;

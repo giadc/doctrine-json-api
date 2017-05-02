@@ -207,5 +207,4 @@ abstract class AbstractJsonApiDoctrineRepository
             throw new \Exception('Invalid Entity: ' . get_class($entity));
         }
     }
-
 }
