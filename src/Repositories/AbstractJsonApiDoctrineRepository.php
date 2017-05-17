@@ -43,7 +43,7 @@ abstract class AbstractJsonApiDoctrineRepository
         $qb = $this->processSorting($qb, $params->getSortDetails());
         $qb = $this->processIncludes($qb, $includes);
 
-        if ($params->getFiltersDetails() == null) {
+        if ($params->getFiltersDetails() != null && isset($this->filters)) {
             $qb = $this->filters->process($qb, $params->getFiltersDetails());
         }
 
@@ -60,6 +60,20 @@ abstract class AbstractJsonApiDoctrineRepository
     public function findById($value, Includes $includes = null)
     {
         $results = $this->findByField($value, 'id', $includes);
+        return $results == null ? null : $results[0];
+    }
+
+    /**
+     * Find entity by field value
+     *
+     * @param  mixed         $value
+     * @param  string        $field
+     * @param  Includes|null $includes
+     * @return mixed
+     */
+    public function findOneByField($value, $field = 'id', Includes $includes = null)
+    {
+        $results = $this->findByField($value, $field, $includes);
         return $results == null ? null : $results[0];
     }
 
