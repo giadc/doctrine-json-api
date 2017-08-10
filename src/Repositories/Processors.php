@@ -104,6 +104,8 @@ trait Processors
         foreach ($sortArray as $key => $field) {
             if ($this->hasField($field['field'])) {
                 $qb->addOrderBy('e.' . $field['field'], $field['direction']);
+            } elseif ($this->hasAssociation($field['field'])) {
+                $qb->addOrderBy($field['field'], $field['direction']);                
             }
         }
 
