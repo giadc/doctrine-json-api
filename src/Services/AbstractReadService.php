@@ -2,6 +2,7 @@
 namespace Giadc\DoctrineJsonApi\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Giadc\DoctrineJsonApi\Exceptions\EntityCannotBeFoundException;
 use Giadc\JsonApiRequest\Requests\RequestParams;
 
 abstract class AbstractReadService
@@ -18,10 +19,10 @@ abstract class AbstractReadService
     /**
      * Initialize the read service
      *
-     * @param  AbstractJsonApiRepositoryInterface $repo
-     * @return void
+     * @param mixed $repo
+     * @param string $entityReadableName
      */
-    public function initialize($repo, $entityReadableName = 'Entity')
+    public function initialize($repo, string $entityReadableName = 'Entity')
     {
         $this->repo               = $repo;
         $this->entityReadableName = $entityReadableName;
@@ -29,13 +30,13 @@ abstract class AbstractReadService
     }
 
     /**
-     * Find a single Entity
+     * Find a single Entity by Id.
      *
      * @param  string $id
      * @param  array $additionalIncludes
      * @return mixed
      */
-    public function findById($id, $additionalIncludes = [])
+    public function findById(string $id, array $additionalIncludes = [])
     {
         $includes = $this->requestParams->getIncludes();
         $includes->add($additionalIncludes);
@@ -50,6 +51,24 @@ abstract class AbstractReadService
     }
 
     /**
+     * Find a single Entity by Id or throw exception.
+     *
+     * @param  string $id
+     * @param  array $additionalIncludes
+     * @return mixed
+     */
+    public function findByIdOrFail(string $id, array $additionalIncludes = [])
+    {
+        $entity = $this->findById($id, $additionalIncludes);
+
+        if ($entity === null) {
+            throw new EntityCannotBeFoundException($this->entityReadableName, $id);
+        }
+
+        return $entity;
+    }
+
+    /**
      * Find Entities by array
      *
      * @param  array  $array
@@ -57,7 +76,7 @@ abstract class AbstractReadService
      * @param  array  $additionalIncludes
      * @return array
      */
-    public function findByArray($array, $field = 'id', $additionalIncludes = [])
+    public function findByArray(array $array, string $field = 'id', array $additionalIncludes = [])
     {
         if (empty($array)) {
             return new ArrayCollection();
@@ -72,12 +91,12 @@ abstract class AbstractReadService
     /**
      * Find an Entity by field value
      *
+     * @param  mixed $value
      * @param  string $field
-     * @param  string $value
      * @param  array  $additionalIncludes
      * @return mixed
      */
-    public function findByField($value, $field = 'id', $additionalIncludes = [])
+    public function findByField($value, string $field = 'id', array $additionalIncludes = [])
     {
         $includes = $this->requestParams->getIncludes();
         $includes->add($additionalIncludes);
@@ -92,7 +111,7 @@ abstract class AbstractReadService
      * @param  array $additionalIncludes
      * @return array
      */
-    public function paginate($additionalIncludes = [])
+    public function paginate(array $additionalIncludes = [])
     {
         return $this->repo->paginateAll($this->requestParams, $additionalIncludes);
     }

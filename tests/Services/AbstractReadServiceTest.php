@@ -2,6 +2,7 @@
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Giadc\DoctrineJsonApi\Exceptions\EntityCannotBeFoundException;
 use Giadc\DoctrineJsonApi\Tests\ExampleEntity;
 use Giadc\DoctrineJsonApi\Tests\ExampleFilters;
 use Giadc\DoctrineJsonApi\Tests\ExampleReadService;
@@ -27,6 +28,13 @@ class AbstractReadServiceTest extends DoctrineJsonApiTestCase
     }
 
     public function test_it_throws_an_exception_when_a_find_by_id_fails()
+    {
+        $this->expectException(EntityCannotBeFoundException::class);
+
+        $result = $this->exampleReadService->findByIdOrFail('qq');
+    }
+
+    public function test_it_returns_null_when_a_find_by_id_fails()
     {
         $result = $this->exampleReadService->findById('qq');
         $this->assertNull($result, null);

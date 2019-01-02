@@ -16,7 +16,7 @@ trait Processors
      * @param  Includes     $includes
      * @return QueryBuilder
      */
-    protected function processIncludes(QueryBuilder $qb, Includes $includes)
+    protected function processIncludes(QueryBuilder $qb, Includes $includes): QueryBuilder
     {
         foreach ($includes->toArray() as $include) {
             if (!$this->hasAssociation($include) || $this->includeExists($qb, $include)) {
@@ -73,7 +73,7 @@ trait Processors
      * @param  string       $include
      * @return bool
      */
-    protected function includeExists(QueryBuilder $qb, $include)
+    protected function includeExists(QueryBuilder $qb, string $include): bool
     {
         foreach ($qb->getDQLPart('join') as $joins) {
             foreach ($joins as $join) {
@@ -93,7 +93,7 @@ trait Processors
      * @param  Sorting      $sort
      * @return QueryBuilder
      */
-    protected function processSorting(QueryBuilder $qb, Sorting $sort)
+    protected function processSorting(QueryBuilder $qb, Sorting $sort): QueryBuilder
     {
         $sortArray = $sort->toArray();
 
@@ -105,7 +105,7 @@ trait Processors
             if ($this->hasField($field['field'])) {
                 $qb->addOrderBy('e.' . $field['field'], $field['direction']);
             } elseif ($this->hasAssociation($field['field'])) {
-                $qb->addOrderBy($field['field'], $field['direction']);                
+                $qb->addOrderBy($field['field'], $field['direction']);
             }
         }
 
@@ -119,7 +119,7 @@ trait Processors
      * @param  Pagination   $page
      * @return Paginator
      */
-    public function paginate(QueryBuilder $query, Pagination $page)
+    public function paginate(QueryBuilder $query, Pagination $page): Paginator
     {
         $query = $query->setParameters($query->getParameters())
             ->setFirstResult($page->getOffset() * $page->getPageSize())
@@ -134,7 +134,7 @@ trait Processors
      * @param  string  $field
      * @return boolean
      */
-    protected function hasField($field)
+    protected function hasField(string $field): bool
     {
         $fields = $this->getClassMetadata($this->class);
 
@@ -147,7 +147,7 @@ trait Processors
      * @param  string  $association
      * @return boolean
      */
-    protected function hasAssociation($association)
+    protected function hasAssociation(string $association): bool
     {
         $associations = $this->getClassMetadata()->getAssociationMappings();
 

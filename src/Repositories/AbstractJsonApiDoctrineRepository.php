@@ -2,6 +2,7 @@
 namespace Giadc\DoctrineJsonApi\Repositories;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Giadc\DoctrineJsonApi\Repositories\Processors;
 use Giadc\JsonApiRequest\Requests\Filters;
 use Giadc\JsonApiRequest\Requests\Includes;
@@ -32,7 +33,7 @@ abstract class AbstractJsonApiDoctrineRepository
      * @param  array $additionalIncludes
      * @return Doctrine\ORM\Tools\Pagination\Paginator
      */
-    public function paginateAll(RequestParams $params, $additionalIncludes = [])
+    public function paginateAll(RequestParams $params, array $additionalIncludes = []): Paginator
     {
         $qb = $this->em->createQueryBuilder();
         $includes = $params->getIncludes();
@@ -57,7 +58,7 @@ abstract class AbstractJsonApiDoctrineRepository
      * @param  Includes|null $includes
      * @return mixed
      */
-    public function findById($value, Includes $includes = null)
+    public function findById(string $value, Includes $includes = null)
     {
         $results = $this->findByField($value, 'id', $includes);
         return $results == null ? null : $results[0];
@@ -71,7 +72,7 @@ abstract class AbstractJsonApiDoctrineRepository
      * @param  Includes|null $includes
      * @return mixed
      */
-    public function findOneByField($value, $field = 'id', Includes $includes = null)
+    public function findOneByField($value, string $field = 'id', Includes $includes = null)
     {
         $results = $this->findByField($value, $field, $includes);
         return $results == null ? null : $results[0];
@@ -85,7 +86,7 @@ abstract class AbstractJsonApiDoctrineRepository
      * @param  Includes|null $includes
      * @return ArrayCollection
      */
-    public function findByField($value, $field = 'id', Includes $includes = null)
+    public function findByField($value, string $field = 'id', Includes $includes = null)
     {
         $qb = $this->em->createQueryBuilder();
 
@@ -110,7 +111,7 @@ abstract class AbstractJsonApiDoctrineRepository
      * @param  Includes|null $includes
      * @return ArrayCollection
      */
-    public function findByArray($array, $field = 'id', Includes $includes = null)
+    public function findByArray(array $array, string $field = 'id', Includes $includes = null)
     {
         $qb = $this->em->createQueryBuilder();
         $qb->select('e');
@@ -128,7 +129,7 @@ abstract class AbstractJsonApiDoctrineRepository
      * Updates or creates an Entity
      *
      * @param $entity
-     * @return void
+     * @return mixed
      */
     public function createOrUpdate($entity)
     {
@@ -149,7 +150,7 @@ abstract class AbstractJsonApiDoctrineRepository
      * @param $entity
      * @return void
      */
-    public function update($entity, $mute = false)
+    public function update($entity, bool $mute = false)
     {
         $this->isValidEntity($entity);
         $this->em->merge($entity);
@@ -165,7 +166,7 @@ abstract class AbstractJsonApiDoctrineRepository
      * @param mixed   $entity
      * @param boolean $mute
      */
-    public function add($entity, $mute = false)
+    public function add($entity, bool $mute = false)
     {
         $this->isValidEntity($entity);
         $this->em->persist($entity);
@@ -179,10 +180,9 @@ abstract class AbstractJsonApiDoctrineRepository
      * Delete an Entity from the database
      *
      * @param  mixed   $entity
-     * @param  boolean $force
      * @param  boolean $mute
      */
-    public function delete($entity, $mute = false)
+    public function delete($entity, bool $mute = false)
     {
         $this->isValidEntity($entity);
         $this->em->remove($entity);
