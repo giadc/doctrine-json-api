@@ -17,9 +17,9 @@
         "giadc/json-api-request": "dev-laravel-6"
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.4",
-        "mockery/mockery": "^1.3",
         "doctrine/data-fixtures": "^1.4",
+        "mockery/mockery": "^1.3",
+        "phpunit/phpunit": "^8.4",
         "symfony/yaml": "^5.0"
     },
     "autoload": {
@@ -31,5 +31,10 @@
         "classmap": [
             "tests/"
         ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
     }
 }
