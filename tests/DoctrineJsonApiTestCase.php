@@ -1,8 +1,9 @@
 <?php
 
 use Doctrine\ORM\Tools\SchemaTool;
+use PHPUnit\Framework\TestCase;
 
-abstract class DoctrineJsonApiTestCase extends \PHPUnit_Framework_TestCase
+abstract class DoctrineJsonApiTestCase extends TestCase
 {
     /** @var Doctrine\Orm\EntityManager */
     protected $entityManager;
@@ -10,7 +11,7 @@ abstract class DoctrineJsonApiTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Before-test setup
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->buildSchema();
@@ -48,7 +49,7 @@ abstract class DoctrineJsonApiTestCase extends \PHPUnit_Framework_TestCase
     /**
      * End-of-test cleanup
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 
