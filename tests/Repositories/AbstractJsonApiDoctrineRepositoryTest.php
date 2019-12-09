@@ -14,7 +14,7 @@ use Mockery as m;
 
 class AbstractJsonApiDoctrineRepositoryTest extends \DoctrineJsonApiTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

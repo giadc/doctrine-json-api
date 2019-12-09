@@ -1,12 +1,12 @@
 <?php
 
-use Doctrine\ORM\Tools\Setup;
 use Giadc\JsonApiRequest\Requests\Filters;
 use Giadc\DoctrineJsonApi\Tests\ExampleFilters;
+use PHPUnit\Framework\TestCase;
 
-class FilterManagerTest extends PHPUnit_Framework_TestCase
+class FilterManagerTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->filterManager = new ExampleFilters();
     }

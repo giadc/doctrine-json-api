@@ -10,9 +10,7 @@ use Giadc\DoctrineJsonApi\Tests\ExampleRepository;
 
 class AbstractReadServiceTest extends DoctrineJsonApiTestCase
 {
-    private $exampleRepository;
-
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -30,14 +28,13 @@ class AbstractReadServiceTest extends DoctrineJsonApiTestCase
     public function test_it_throws_an_exception_when_a_find_by_id_fails()
     {
         $this->expectException(EntityCannotBeFoundException::class);
-
-        $result = $this->exampleReadService->findByIdOrFail('qq');
+        $this->exampleReadService->findByIdOrFail('doesntExist');
     }
 
     public function test_it_returns_null_when_a_find_by_id_fails()
     {
         $result = $this->exampleReadService->findById('qq');
-        $this->assertNull($result, null);
+        $this->assertNull($result);
     }
 
     public function test_it_finds_entities_by_array()
