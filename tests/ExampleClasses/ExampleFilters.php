@@ -13,5 +13,14 @@ class ExampleFilters extends FilterManager
         'name'  => ['type' => 'keyword'],
         'size'  => ['type' => 'combined', 'keys' => ['width', 'height'], 'separator' => 'x'],
         'dates' => ['type' => 'date', 'key' => 'runDate'],
+        'combined' => [
+            'type' => 'combined',
+            'keys' => [
+                'name',
+                'relationships.firstName',
+                'relationships.lastName',
+            ],
+            'separator' => ' ',
+        ],
     ];
 }

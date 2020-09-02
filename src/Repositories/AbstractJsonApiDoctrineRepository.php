@@ -1,12 +1,11 @@
 <?php
+
 namespace Giadc\DoctrineJsonApi\Repositories;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use Giadc\DoctrineJsonApi\Repositories\Processors;
 use Giadc\JsonApiRequest\Requests\Filters;
 use Giadc\JsonApiRequest\Requests\Includes;
-use Giadc\JsonApiRequest\Requests\Pagination;
 use Giadc\JsonApiRequest\Requests\RequestParams;
 use Giadc\JsonApiRequest\Requests\Sorting;
 
@@ -17,7 +16,7 @@ abstract class AbstractJsonApiDoctrineRepository
     protected $class;
 
     /**
-     * Get the default Sorting for the repository
+     * Get the default Sorting for the repository.
      *
      * @return array
      */
@@ -27,19 +26,19 @@ abstract class AbstractJsonApiDoctrineRepository
     }
 
     /**
-     * Paginate entities with Includes, Sorting, and Filters
+     * Paginate entities with Includes, Sorting, and Filters.
      *
-     * @param  RequestParams $params
-     * @param  array $additionalIncludes
      * @return Doctrine\ORM\Tools\Pagination\Paginator
      */
-    public function paginateAll(RequestParams $params, array $additionalIncludes = []): Paginator
-    {
+    public function paginateAll(
+        RequestParams $params,
+        array $additionalIncludes = []
+    ): Paginator {
         $qb = $this->em->createQueryBuilder();
         $includes = $params->getIncludes();
         $includes->add($additionalIncludes);
 
-        $qb->select('e') ->from($this->class, 'e');
+        $qb->select('e')->from($this->class, 'e');
 
         $qb = $this->processSorting($qb, $params->getSortDetails());
         $qb = $this->processIncludes($qb, $includes);
@@ -52,45 +51,50 @@ abstract class AbstractJsonApiDoctrineRepository
     }
 
     /**
-     * Find an entity by ID
+     * Find an entity by ID.
      *
-     * @param  string        $value
-     * @param  Includes|null $includes
      * @return mixed
      */
     public function findById(string $value, Includes $includes = null)
     {
         $results = $this->findByField($value, 'id', $includes);
+
         return $results == null ? null : $results[0];
     }
 
     /**
-     * Find entity by field value
+     * Find entity by field value.
      *
      * @param  mixed         $value
-     * @param  string        $field
-     * @param  Includes|null $includes
+     *
      * @return mixed
      */
-    public function findOneByField($value, string $field = 'id', Includes $includes = null)
-    {
+    public function findOneByField(
+        $value,
+        string $field = 'id',
+        Includes $includes = null
+    ) {
         $results = $this->findByField($value, $field, $includes);
+
         return $results == null ? null : $results[0];
     }
 
     /**
-     * Find entities by field value
+     * Find entities by field value.
      *
      * @param  mixed         $value
-     * @param  string        $field
-     * @param  Includes|null $includes
+     *
      * @return ArrayCollection
      */
-    public function findByField($value, string $field = 'id', Includes $includes = null)
-    {
+    public function findByField(
+        $value,
+        string $field = 'id',
+        Includes $includes = null
+    ) {
         $qb = $this->em->createQueryBuilder();
 
-        $qb->select('e')
+        $qb
+            ->select('e')
             ->from($this->class, 'e')
             ->where('e.' . $field . ' = ?1');
 
@@ -104,15 +108,15 @@ abstract class AbstractJsonApiDoctrineRepository
     }
 
     /**
-     * Find enties by an array of field values
+     * Find enties by an array of field values.
      *
-     * @param  array         $array
-     * @param  string        $field
-     * @param  Includes|null $includes
      * @return ArrayCollection
      */
-    public function findByArray(array $array, string $field = 'id', Includes $includes = null)
-    {
+    public function findByArray(
+        array $array,
+        string $field = 'id',
+        Includes $includes = null
+    ) {
         $qb = $this->em->createQueryBuilder();
         $qb->select('e');
         $qb->from($this->class, 'e');
@@ -126,9 +130,10 @@ abstract class AbstractJsonApiDoctrineRepository
     }
 
     /**
-     * Updates or creates an Entity
+     * Updates or creates an Entity.
      *
      * @param $entity
+     *
      * @return mixed
      */
     public function createOrUpdate($entity)
@@ -145,9 +150,10 @@ abstract class AbstractJsonApiDoctrineRepository
     }
 
     /**
-     * Update an existing Entity
+     * Update an existing Entity.
      *
      * @param $entity
+     *
      * @return void
      */
     public function update($entity, bool $mute = false)
@@ -161,10 +167,9 @@ abstract class AbstractJsonApiDoctrineRepository
     }
 
     /**
-     * Add a new Entity to the database
+     * Add a new Entity to the database.
      *
      * @param mixed   $entity
-     * @param boolean $mute
      */
     public function add($entity, bool $mute = false)
     {
@@ -177,10 +182,9 @@ abstract class AbstractJsonApiDoctrineRepository
     }
 
     /**
-     * Delete an Entity from the database
+     * Delete an Entity from the database.
      *
      * @param  mixed   $entity
-     * @param  boolean $mute
      */
     public function delete($entity, bool $mute = false)
     {
@@ -193,7 +197,7 @@ abstract class AbstractJsonApiDoctrineRepository
     }
 
     /**
-     * Flush pending changes to the database
+     * Flush pending changes to the database.
      */
     public function flush()
     {
@@ -210,10 +214,11 @@ abstract class AbstractJsonApiDoctrineRepository
     }
 
     /**
-     * Is the given Entity a valid member of this Repository
+     * Is the given Entity a valid member of this Repository.
      *
      * @param  mixed $entity
-     * @return boolean
+     *
+     * @return bool
      */
     protected function isValidEntity($entity)
     {
