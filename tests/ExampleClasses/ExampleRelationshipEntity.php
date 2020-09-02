@@ -10,6 +10,12 @@ class ExampleRelationshipEntity
     /** @var ExampleEntity */
     private $parent;
 
+    /** @var string */
+    private $firstName= 'fake';
+
+    /** @var string */
+    private $lastName = 'name';
+
     public function __construct($id)
     {
         $this->id = $id;

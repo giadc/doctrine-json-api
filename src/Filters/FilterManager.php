@@ -225,18 +225,21 @@ abstract class FilterManager
      * @param  array  $data
      * @param  array  $keys
      * @param  string $separator
-     * @return void
      */
-    private function buildCombinedConditions($data, $keys, $separator)
+    private function buildCombinedConditions($data, $keys, $separator): array
     {
-        $concatArray    = $this->getConcatArray($keys, $separator);
-        $concatFunction = new \Doctrine\ORM\Query\Expr\Func('CONCAT', $concatArray);
-
         $conditions = [];
+        $concatArrays = $this->getConcatArrays($keys, $separator);
 
         foreach ($data as $field) {
-            $conditions[] = $this->qb->expr()
-                ->like($concatFunction, '?' . $this->paramInt);
+            foreach ($concatArrays as $entityConcatArray) {
+                $leftExpr = count($entityConcatArray) > 1
+                    ? new \Doctrine\ORM\Query\Expr\Func('CONCAT', $entityConcatArray)
+                    : $entityConcatArray[0];
+
+                $conditions[] = $this->qb->expr()
+                    ->like($leftExpr, '?' . $this->paramInt);
+            }
 
             $this->setParameter($this->paramInt, '%' . $field . '%');
         }
@@ -251,17 +254,23 @@ abstract class FilterManager
      * @param  string $separator
      * @return array
      */
-    private function getConcatArray($keys, $separator)
+    private function getConcatArrays($keys, $separator)
     {
         $concatArray = [];
 
         foreach ($keys as $key) {
-            $concatArray[] = $this->getKey($key);
-            $concatArray[] = $this->qb->expr()->literal($separator);
+            $dqlKey = $this->getKey($key);
+            $entityKey = explode('.', $dqlKey)[0];
+
+            $concatArray[$entityKey][] = $dqlKey;
+            $concatArray[$entityKey][] = $this->qb->expr()->literal($separator);
         }
 
-        array_pop($concatArray);
-        return $concatArray;
+        // Remove end separator for each relationship
+        return array_map(function ($concatArray) {
+            array_pop($concatArray);
+            return $concatArray;
+        }, $concatArray);
     }
 
     /**
