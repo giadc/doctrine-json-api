@@ -14,6 +14,7 @@ abstract class DoctrineJsonApiTestCase extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
         $this->buildSchema();
         $fixtureLoader = new FixtureLoader($this->getEntityManager());
         $fixtureLoader->execute();

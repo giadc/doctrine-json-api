@@ -1,7 +1,7 @@
 <?php
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Giadc\DoctrineJsonApi\Tests\ExampleEntity;
 use Giadc\DoctrineJsonApi\Tests\ExampleRelationshipEntity;
 

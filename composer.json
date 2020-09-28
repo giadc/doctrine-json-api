@@ -14,7 +14,7 @@
     ],
     "require": {
         "doctrine/orm": "2.5.*|2.6.*|2.7.*",
-        "giadc/json-api-request": "^1.2.0"
+        "giadc/json-api-request": "^1.2.1"
     },
     "require-dev": {
         "doctrine/data-fixtures": "^1.4",
@@ -31,6 +31,9 @@
         "classmap": [
             "tests/"
         ]
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
     },
     "config": {
         "optimize-autoloader": true,
