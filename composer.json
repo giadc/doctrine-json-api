@@ -14,7 +14,7 @@
     ],
     "require": {
         "doctrine/orm": "2.5.*|2.6.*|2.7.*",
-        "giadc/json-api-request": "^1.2.1"
+        "giadc/json-api-request": "dev-f-double-qoute-improvements-double-quote"
     },
     "require-dev": {
         "doctrine/data-fixtures": "^1.4",
