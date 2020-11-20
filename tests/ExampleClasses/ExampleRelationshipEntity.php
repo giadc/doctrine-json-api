@@ -2,23 +2,24 @@
 
 namespace Giadc\DoctrineJsonApi\Tests;
 
-class ExampleRelationshipEntity
+use Giadc\JsonApiResponse\Interfaces\JsonApiResource;
+
+class ExampleRelationshipEntity implements JsonApiResource
 {
     /** @var string */
     private $id;
 
-    /** @var ExampleEntity */
+    /** @var ExampleEntity|null */
     private $parent;
 
-    /** @var string */
-    private $firstName= 'fake';
-
-    /** @var string */
-    private $lastName = 'name';
-
-    public function __construct($id)
+    public function __construct(string $id)
     {
         $this->id = $id;
+    }
+
+    public static function getResourceKey(): string
+    {
+        return 'relationship';
     }
 
     /**
@@ -26,7 +27,7 @@ class ExampleRelationshipEntity
      *
      * @return string
      */
-    public function getId()
+    public function id()
     {
         return $this->id;
     }
@@ -36,8 +37,23 @@ class ExampleRelationshipEntity
      *
      * @param ExampleEntity|null $parent
      */
-    public function setParent(ExampleEntity $parent = null)
+    public function setParent(ExampleEntity $parent = null): self
     {
         $this->parent = $parent;
+
+        return $this;
+    }
+
+    public function getParent(): ?ExampleEntity
+    {
+        return $this->parent;
+    }
+
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+        ];
     }
 }

@@ -1,0 +1,13 @@
+# Example Config: https://github.com/slashfan/symfony-realworld-example-app/blob/master/phpstan.neon.dist
+includes:
+  - vendor/phpstan/phpstan-doctrine/extension.neon
+  - vendor/phpstan/phpstan-doctrine/rules.neon
+  - vendor/phpstan/phpstan-phpunit/extension.neon
+  - vendor/phpstan/phpstan-phpunit/rules.neon
+  - vendor/phpstan/phpstan-mockery/extension.neon
+parameters:
+  tmpDir: /tmp/phpstan
+  level: 8
+  paths:
+    - src
+    - tests
