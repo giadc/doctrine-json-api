@@ -1,18 +1,18 @@
 <?php
+
 namespace Giadc\DoctrineJsonApi\Tests;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface as EntityManager;
 use Giadc\DoctrineJsonApi\Repositories\AbstractJsonApiRepositoryInterface as JsonApiInterface;
 use Giadc\DoctrineJsonApi\Repositories\AbstractJsonApiDoctrineRepository as JsonApiRepository;
-use Giadc\JsonApiRequest\Requests\Filters;
-use Giadc\JsonApiRequest\Requests\Includes;
-use Giadc\JsonApiRequest\Requests\Sorting;
 use Giadc\DoctrineJsonApi\Tests\ExampleEntity;
 use Giadc\DoctrineJsonApi\Tests\ExampleFilters;
 
+/**
+ * @phpstan-extends JsonApiRepository<ExampleEntity>
+ */
 class ExampleRepository extends JsonApiRepository implements
-JsonApiInterface
+    JsonApiInterface
 {
     /**
      * @var EntityManager
@@ -25,8 +25,9 @@ JsonApiInterface
     protected $class;
 
     /**
-     * @var ExampleFilters
+     * @var ExampleFilters|null
      */
+    protected $filters;
 
     /**
      * Create a new ExampleDoctrineRepository

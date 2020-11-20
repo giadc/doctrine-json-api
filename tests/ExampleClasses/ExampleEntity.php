@@ -3,23 +3,37 @@
 namespace Giadc\DoctrineJsonApi\Tests;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Giadc\JsonApiResponse\Interfaces\JsonApiResource;
 
-class ExampleEntity
+class ExampleEntity implements JsonApiResource
 {
+    /** @var string **/
     private $id;
 
+    /** @var string **/
     private $name;
 
+    /** @var int **/
     private $width;
 
+
+    /** @var int **/
     private $height;
 
+    /** @var \DateTime **/
     private $runDate;
 
+    /** @phpstan-var Collection<int, ExampleRelationshipEntity> **/
     private $relationships;
 
-    public function __construct($id, $name = 'Example Entity', $width = 10, $height = 20, \DateTime $runDate = null)
-    {
+    public function __construct(
+        string $id,
+        string $name = 'Example Entity',
+        int $width = 10,
+        int $height = 20,
+        \DateTime $runDate = null
+    ) {
         $this->id      = $id;
         $this->name    = $name;
         $this->width   = $width;
@@ -29,12 +43,17 @@ class ExampleEntity
         $this->relationships = new ArrayCollection();
     }
 
+    public static function getResourceKey(): string
+    {
+        return 'exampleEntity';
+    }
+
     /**
      * Gets the value of id.
      *
      * @return mixed
      */
-    public function getId()
+    public function id()
     {
         return $this->id;
     }
@@ -130,9 +149,9 @@ class ExampleEntity
     /**
      * Get the relationships
      *
-     * @return ArrayCollection
+     * @phpstan-return Collection<int, ExampleRelationshipEntity>
      */
-    public function getRelationships()
+    public function getRelationships(): Collection
     {
         return $this->relationships;
     }
@@ -160,10 +179,21 @@ class ExampleEntity
     public function removeRelationship(ExampleRelationshipEntity $relationship)
     {
         if ($this->relationships->contains($relationship)) {
-            $this->relationships->remove($relationship);
+            $this->relationships->removeElement($relationship);
             $relationship->setParent(null);
         }
 
         return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'width' => $this->width,
+            'height' => $this->height,
+            'runDate' => $this->runDate->format(DATE_ISO8601),
+        ];
     }
 }

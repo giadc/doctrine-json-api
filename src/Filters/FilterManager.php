@@ -1,4 +1,5 @@
 <?php
+
 namespace Giadc\DoctrineJsonApi\Filters;
 
 use Doctrine\ORM\QueryBuilder;
@@ -10,8 +11,6 @@ use Giadc\JsonApiRequest\Requests\Filters;
  */
 abstract class FilterManager
 {
-    use Processors;
-
     /**
      * @var array
      */
