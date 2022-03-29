@@ -2,7 +2,8 @@
 
 namespace Giadc\DoctrineJsonApi\Tests;
 
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
+use Doctrine\ORM\EntityManager;
+use Giadc\DoctrineJsonApi\Filters\FilterManager;
 use Giadc\DoctrineJsonApi\Repositories\AbstractJsonApiRepositoryInterface as JsonApiInterface;
 use Giadc\DoctrineJsonApi\Repositories\AbstractJsonApiDoctrineRepository as JsonApiRepository;
 use Giadc\DoctrineJsonApi\Tests\ExampleEntity;
@@ -10,35 +11,24 @@ use Giadc\DoctrineJsonApi\Tests\ExampleFilters;
 
 /**
  * @phpstan-extends JsonApiRepository<ExampleEntity>
+ * @phpstan-implements JsonApiInterface<ExampleEntity>
  */
 class ExampleRepository extends JsonApiRepository implements
     JsonApiInterface
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
+    protected EntityManager $em;
 
-    /**
-     * @var string
-     */
-    protected $class;
+    protected string $class;
 
-    /**
-     * @var ExampleFilters|null
-     */
-    protected $filters;
+    protected ?FilterManager $filters;
 
     /**
      * Create a new ExampleDoctrineRepository
-     *
-     * @param EntityManager $em
-     * @return void
      */
     public function __construct(EntityManager $em, ExampleFilters $filters = null)
     {
-        $this->em      = $em;
-        $this->class   = ExampleEntity::class;
+        $this->em = $em;
+        $this->class = ExampleEntity::class;
         $this->filters = $filters;
     }
 }

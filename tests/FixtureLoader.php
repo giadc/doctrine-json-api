@@ -6,14 +6,14 @@ use Doctrine\ORM\EntityManager;
 
 class FixtureLoader
 {
-    private $entityManager;
+    private EntityManager $entityManager;
 
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
     }
 
-    public function execute()
+    public function execute(): void
     {
         $ormExecuter = new ORMExecutor(
             $this->entityManager,

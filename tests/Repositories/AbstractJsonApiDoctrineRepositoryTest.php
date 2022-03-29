@@ -27,17 +27,42 @@ class AbstractJsonApiDoctrineRepositoryTest extends \DoctrineJsonApiTestCase
 
     public function test_it_returns_paginated_results(): void
     {
-        $pagination = m::mock(Pagination::class)->shouldReceive('getOffset')->andReturn(0)->shouldReceive('getPageSize')->andReturn(15)->getMock();
-        $includes = m::mock(Includes::class)->shouldReceive('add')->shouldReceive('toArray')->andReturn([])->getMock();
-        $sorting  = m::mock(Sorting::class)->shouldReceive('toArray')->andReturn([])->getMock();
-        $filters  = m::mock(Filters::class)->shouldReceive('toArray')->andReturn([])->getMock();
+        /** @var m\MockInterface&Pagination */
+        $pagination = m::mock(Pagination::class);
+        $pagination
+            ->shouldReceive('getOffset')
+            ->andReturn(0);
+        $pagination
+            ->shouldReceive('getPageSize')
+            ->andReturn(15)
+            ->getMock();
 
-        $params = m::mock(RequestParams::class)
-            ->shouldReceive('toArray')->andReturn([])
-            ->shouldReceive('getIncludes')->andReturn($includes)
-            ->shouldReceive('getFiltersDetails')->andReturn($filters)
-            ->shouldReceive('getSortDetails')->andReturn($sorting)
-            ->shouldReceive('getPageDetails')->andReturn($pagination)
+        /** @var m\MockInterface&Includes */
+        $includes = m::mock(Includes::class);
+        $includes->shouldReceive('add');
+        $includes->shouldReceive('toArray')
+            ->andReturn([])
+            ->getMock();
+
+        /** @var m\MockInterface&Sorting */
+        $sorting = m::mock(Sorting::class);
+        $sorting->shouldReceive('toArray')
+            ->andReturn([])
+            ->getMock();
+
+        /** @var m\MockInterface&Filters */
+        $filters = m::mock(Filters::class);
+        $filters->shouldReceive('toArray')
+            ->andReturn([])
+            ->getMock();
+
+        /** @var m\MockInterface&RequestParams */
+        $params = m::mock(RequestParams::class);
+        $params->shouldReceive('toArray')->andReturn([]);
+        $params->shouldReceive('getIncludes')->andReturn($includes);
+        $params->shouldReceive('getFiltersDetails')->andReturn($filters);
+        $params->shouldReceive('getSortDetails')->andReturn($sorting);
+        $params->shouldReceive('getPageDetails')->andReturn($pagination)
             ->getMock();
 
         $results = $this->exampleRepository->paginateAll($params);
@@ -51,9 +76,15 @@ class AbstractJsonApiDoctrineRepositoryTest extends \DoctrineJsonApiTestCase
         $result   = $this->exampleRepository->findByField('Example Entity 1', 'name', $includes);
 
         $this->assertInstanceOf(ArrayCollection::class, $result);
-        $this->assertEquals('Example Entity 1', $result->first()->getName());
-        $this->assertTrue($result->first()->getRelationships()->isInitialized());
-        $this->assertEquals(2, $result->first()->getRelationships()->count());
+
+        $firstResult = $result->first();
+
+        $this->assertInstanceOf(ExampleEntity::class, $firstResult);
+        $this->assertEquals('Example Entity 1', $firstResult->getName());
+
+        /** @phpstan-ignore-next-line */
+        $this->assertTrue($firstResult->getRelationships()->isInitialized());
+        $this->assertEquals(2, $firstResult->getRelationships()->count());
     }
 
     public function test_it_finds_an_entity_by_id(): void
@@ -63,6 +94,8 @@ class AbstractJsonApiDoctrineRepositoryTest extends \DoctrineJsonApiTestCase
 
         $this->assertInstanceOf(ExampleEntity::class, $result);
         $this->assertEquals('1', $result->id());
+
+        /** @phpstan-ignore-next-line */
         $this->assertTrue($result->getRelationships()->isInitialized());
         $this->assertEquals(2, $result->getRelationships()->count());
     }
@@ -74,7 +107,10 @@ class AbstractJsonApiDoctrineRepositoryTest extends \DoctrineJsonApiTestCase
 
         $this->assertInstanceOf(ArrayCollection::class, $result);
         $this->assertEquals(2, $result->count());
+
+        /** @phpstan-ignore-next-line */
         $this->assertTrue($result->first()->getRelationships()->isInitialized());
+        $this->assertInstanceOf(ExampleEntity::class, $result->first());
         $this->assertEquals(2, $result->first()->getRelationships()->count());
     }
 
@@ -91,17 +127,22 @@ class AbstractJsonApiDoctrineRepositoryTest extends \DoctrineJsonApiTestCase
     public function test_it_updates_an_entity(): void
     {
         $entity = $this->exampleRepository->findById('1');
+        $this->assertInstanceOf(ExampleEntity::class, $entity);
+
         $entity->setName('Updated Name');
         $this->exampleRepository->update($entity);
         $this->exampleRepository->clear();
 
         $updatedEntity = $this->exampleRepository->findById('1');
+        $this->assertInstanceOf(ExampleEntity::class, $updatedEntity);
         $this->assertEquals('Updated Name', $updatedEntity->getName());
     }
 
     public function test_it_deletes_an_entity(): void
     {
         $entity = $this->exampleRepository->findById('1');
+        $this->assertInstanceOf(ExampleEntity::class, $entity);
+
         $this->exampleRepository->delete($entity);
         $this->exampleRepository->clear();
 
@@ -109,7 +150,7 @@ class AbstractJsonApiDoctrineRepositoryTest extends \DoctrineJsonApiTestCase
         $this->assertEquals(null, $foundEntity);
     }
 
-    public function test_it_doesnt_fail_on_invalid_includes(): void
+    public function test_it_does_not_fail_on_invalid_includes(): void
     {
         $includes = new Includes([
             'relationships',

@@ -19,15 +19,11 @@ use Giadc\JsonApiRequest\Requests\Sorting;
 abstract class AbstractJsonApiDoctrineRepository
 {
     /**
-     * @var string
      * @phpstan-var class-string<Entity>
      */
-    protected $class;
+    protected string $class;
 
-    /**
-     * @var EntityManager
-     */
-    protected $em;
+    protected EntityManager $em;
 
     /**
      * Get the default Sorting for the repository.
@@ -45,14 +41,12 @@ abstract class AbstractJsonApiDoctrineRepository
      * Paginate entities with Includes, Sorting, and Filters.
      *
      * @phpstan-param array<string> $additionalIncludes
-     *
-     * @return Paginator
      * @phpstan-return Paginator<Entity>
      */
     public function paginateAll(
         RequestParams $params,
         array $additionalIncludes = []
-    ) {
+    ): Paginator {
         $qb = $this->em->createQueryBuilder();
         $includes = $params->getIncludes();
         $includes->add($additionalIncludes);
@@ -72,12 +66,9 @@ abstract class AbstractJsonApiDoctrineRepository
     /**
      * Find an entity by ID.
      *
-     * @param string | int $value
-     *
-     * @return ?object
      * @phpstan-return Entity | null
      */
-    public function findById($value, Includes $includes = null)
+    public function findById(string|int $value, Includes $includes = null): ?object
     {
         $results = $this->findByField($value, 'id', $includes);
 
@@ -87,16 +78,13 @@ abstract class AbstractJsonApiDoctrineRepository
     /**
      * Find entity by field value.
      *
-     * @param  mixed $value
-     *
-     * @return ?object
      * @phpstan-return Entity | null
      */
     public function findOneByField(
-        $value,
+        mixed $value,
         string $field = 'id',
         Includes $includes = null
-    ) {
+    ): ?object {
         $results = $this->findByField($value, $field, $includes);
 
         return $results == null ? null : $results[0];
@@ -105,16 +93,13 @@ abstract class AbstractJsonApiDoctrineRepository
     /**
      * Find entities by field value.
      *
-     * @param mixed $value
-     *
-     * @return ArrayCollection
      * @phpstan-return ArrayCollection<string | int, Entity>
      */
     public function findByField(
-        $value,
+        mixed $value,
         string $field = 'id',
         Includes $includes = null
-    ) {
+    ): ArrayCollection {
         $qb = $this->em->createQueryBuilder();
 
         $qb
@@ -135,15 +120,13 @@ abstract class AbstractJsonApiDoctrineRepository
      * Find entities by an array of field values.
      *
      * @phpstan-param array<mixed> $array
-     *
-     * @return ArrayCollection
      * @phpstan-return ArrayCollection<string | int, Entity>
      */
     public function findByArray(
         array $array,
         string $field = 'id',
         Includes $includes = null
-    ) {
+    ): ArrayCollection {
         $qb = $this->em->createQueryBuilder();
         $qb->select('e');
         $qb->from($this->class, 'e');
@@ -159,12 +142,9 @@ abstract class AbstractJsonApiDoctrineRepository
     /**
      * Updates or creates an Entity.
      *
-     * @param object $entity
      * @phpstan-param Entity $entity
-     *
-     * @return void
      */
-    public function createOrUpdate($entity)
+    public function createOrUpdate(object $entity): void
     {
         $this->isValidEntity($entity);
 
@@ -180,12 +160,9 @@ abstract class AbstractJsonApiDoctrineRepository
     /**
      * Update an existing Entity.
      *
-     * @param object $entity
      * @phpstan-param Entity $entity
-     *
-     * @return void
      */
-    public function update($entity, bool $mute = false)
+    public function update(object $entity, bool $mute = false): void
     {
         $this->isValidEntity($entity);
         $this->em->merge($entity);
@@ -198,12 +175,9 @@ abstract class AbstractJsonApiDoctrineRepository
     /**
      * Add a new Entity to the database.
      *
-     * @param object $entity
      * @phpstan-param Entity $entity
-     *
-     * @return void
      */
-    public function add($entity, bool $mute = false)
+    public function add(object $entity, bool $mute = false): void
     {
         $this->isValidEntity($entity);
         $this->em->persist($entity);
@@ -216,12 +190,9 @@ abstract class AbstractJsonApiDoctrineRepository
     /**
      * Delete an Entity from the database.
      *
-     * @param object $entity
      * @phpstan-param Entity $entity
-     *
-     * @return void
      */
-    public function delete($entity, bool $mute = false)
+    public function delete(object $entity, bool $mute = false): void
     {
         $this->isValidEntity($entity);
         $this->em->remove($entity);
@@ -233,10 +204,8 @@ abstract class AbstractJsonApiDoctrineRepository
 
     /**
      * Flush pending changes to the database.
-     *
-     * @return void
      */
-    public function flush()
+    public function flush(): void
     {
         $this->em->flush();
     }
@@ -244,10 +213,8 @@ abstract class AbstractJsonApiDoctrineRepository
     /**
      * Clears the EntityManager. All entities that are currently managed
      * by this EntityManager become detached.
-     *
-     * @return void
      */
-    public function clear()
+    public function clear(): void
     {
         $this->em->clear();
     }
@@ -416,9 +383,7 @@ abstract class AbstractJsonApiDoctrineRepository
             return null;
         }
 
-        return $metadata->getAssociationMappings()[$association][
-            'targetEntity'
-        ] ?? null;
+        return $metadata->getAssociationMappings()[$association]['targetEntity'] ?? null;
     }
 
     /**

@@ -14,7 +14,7 @@ class AbstractReadServiceTest extends DoctrineJsonApiTestCase
     {
         parent::setUp();
 
-        $exampleRepository        = new ExampleRepository($this->getEntityManager());
+        $exampleRepository = new ExampleRepository($this->getEntityManager());
         $this->exampleReadService = new ExampleReadService($exampleRepository, new ExampleFilters());
     }
 

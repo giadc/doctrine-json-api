@@ -50,7 +50,10 @@ class ExampleRelationshipEntity implements JsonApiResource
     }
 
 
-    public function jsonSerialize()
+    /**
+     * @phpstan-return array<string, string|int|bool>
+     */
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->id,

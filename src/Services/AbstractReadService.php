@@ -1,29 +1,36 @@
 <?php
+
 namespace Giadc\DoctrineJsonApi\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Giadc\DoctrineJsonApi\Exceptions\EntityCannotBeFoundException;
+use Giadc\DoctrineJsonApi\Repositories\AbstractJsonApiRepositoryInterface;
 use Giadc\JsonApiRequest\Requests\RequestParams;
 
+/**
+ * @template Entity of \Giadc\JsonApiResponse\Interfaces\JsonApiResource
+ */
 abstract class AbstractReadService
 {
-    /** @var AbstractJsonApiRepositoryInterface */
-    protected $repo;
+    /**
+     * @phpstan-var AbstractJsonApiRepositoryInterface<Entity>
+     */
+    protected AbstractJsonApiRepositoryInterface $repo;
 
-    /** @var RequestParams */
-    protected $requestParams;
+    protected RequestParams $requestParams;
 
-    /** @var string */
-    protected $entityReadableName;
+    protected string $entityReadableName;
 
     /**
      * Initialize the read service
      *
-     * @param mixed $repo
-     * @param string $entityReadableName
+     * @phpstan-param AbstractJsonApiRepositoryInterface<Entity> $repo
      */
-    public function initialize($repo, string $entityReadableName = 'Entity')
-    {
+    public function initialize(
+        AbstractJsonApiRepositoryInterface $repo,
+        string $entityReadableName = 'Entity'
+    ): void {
         $this->repo               = $repo;
         $this->entityReadableName = $entityReadableName;
         $this->requestParams      = new RequestParams();
@@ -32,11 +39,10 @@ abstract class AbstractReadService
     /**
      * Find a single Entity by Id.
      *
-     * @param  string $id
-     * @param  array $additionalIncludes
-     * @return mixed
+     * @phpstan-param  string[] $additionalIncludes
+     * @phpstan-return ?Entity
      */
-    public function findById(string $id, array $additionalIncludes = [])
+    public function findById(string $id, array $additionalIncludes = []): ?object
     {
         $includes = $this->requestParams->getIncludes();
         $includes->add($additionalIncludes);
@@ -53,11 +59,10 @@ abstract class AbstractReadService
     /**
      * Find a single Entity by Id or throw exception.
      *
-     * @param  string $id
-     * @param  array $additionalIncludes
-     * @return mixed
+     * @phpstan-param  string[] $additionalIncludes
+     * @phpstan-return Entity
      */
-    public function findByIdOrFail(string $id, array $additionalIncludes = [])
+    public function findByIdOrFail(string $id, array $additionalIncludes = []): object
     {
         $entity = $this->findById($id, $additionalIncludes);
 
@@ -71,13 +76,15 @@ abstract class AbstractReadService
     /**
      * Find Entities by array
      *
-     * @param  array  $array
-     * @param  string $field
-     * @param  array  $additionalIncludes
-     * @return array
+     * @phpstan-param array<mixed> $array
+     * @phpstan-param  string[] $additionalIncludes
+     * @phpstan-return ArrayCollection<string | int, Entity>
      */
-    public function findByArray(array $array, string $field = 'id', array $additionalIncludes = [])
-    {
+    public function findByArray(
+        array $array,
+        string $field = 'id',
+        array $additionalIncludes = []
+    ): ArrayCollection {
         if (empty($array)) {
             return new ArrayCollection();
         }
@@ -91,13 +98,14 @@ abstract class AbstractReadService
     /**
      * Find an Entity by field value
      *
-     * @param  mixed $value
-     * @param  string $field
-     * @param  array  $additionalIncludes
-     * @return mixed
+     * @phpstan-param  string[] $additionalIncludes
+     * @phpstan-return ArrayCollection<string | int, Entity>
      */
-    public function findByField($value, string $field = 'id', array $additionalIncludes = [])
-    {
+    public function findByField(
+        mixed $value,
+        string $field = 'id',
+        array $additionalIncludes = []
+    ): ArrayCollection {
         $includes = $this->requestParams->getIncludes();
         $includes->add($additionalIncludes);
 
@@ -108,10 +116,10 @@ abstract class AbstractReadService
      * Returns paginated list of Entities with
      * optional Filtering, Sorting, & Includes
      *
-     * @param  array $additionalIncludes
-     * @return array
+     * @phpstan-param  string[] $additionalIncludes
+     * @phpstan-return Paginator<Entity>
      */
-    public function paginate(array $additionalIncludes = [])
+    public function paginate(array $additionalIncludes = []): Paginator
     {
         return $this->repo->paginateAll($this->requestParams, $additionalIncludes);
     }

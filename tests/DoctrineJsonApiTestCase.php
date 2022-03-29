@@ -1,12 +1,12 @@
 <?php
 
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use PHPUnit\Framework\TestCase;
 
 abstract class DoctrineJsonApiTestCase extends TestCase
 {
-    /** @var Doctrine\Orm\EntityManager */
-    protected $entityManager;
+    protected ?EntityManager $entityManager = null;
 
     /**
      * Before-test setup
@@ -34,10 +34,7 @@ abstract class DoctrineJsonApiTestCase extends TestCase
         return $this->entityManager;
     }
 
-    /**
-     * Build database Schema
-     */
-    protected function buildSchema()
+    protected function buildSchema(): void
     {
         $schemaTool = new SchemaTool($this->getEntityManager());
         $metadatas  = $this->getEntityManager()
@@ -54,7 +51,7 @@ abstract class DoctrineJsonApiTestCase extends TestCase
     {
         parent::tearDown();
 
-        $this->entityManager->close();
+        $this->entityManager?->close();
         $this->entityManager = null; // avoid memory leaks
     }
 }

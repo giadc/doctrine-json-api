@@ -1,4 +1,5 @@
 <?php
+
 namespace Giadc\DoctrineJsonApi\Repositories;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -15,119 +16,95 @@ interface AbstractJsonApiRepositoryInterface
      * Paginate entities with Includes, Sorting, and Filters.
      *
      * @phpstan-param array<string> $additionalIncludes
-     *
-     * @return Paginator
      * @phpstan-return Paginator<Entity>
      */
     public function paginateAll(
         RequestParams $params,
         array $additionalIncludes = []
-    );
+    ): Paginator;
 
     /**
      * Find an entity by ID.
      *
-     * @param string | int $value
-     *
-     * @return ?object
      * @phpstan-return Entity | null
      */
-    public function findById($value, Includes $includes = null);
+    public function findById(
+        string|int $value,
+        Includes $includes = null
+    ): ?object;
 
     /**
      * Find entity by field value.
      *
-     * @param  mixed $value
-     *
-     * @return ?object
      * @phpstan-return Entity | null
      */
     public function findOneByField(
-        $value,
+        mixed $value,
         string $field = 'id',
         Includes $includes = null
-    );
+    ): ?object;
 
     /**
      * Find entities by field value.
-     *
-     * @param mixed $value
      *
      * @return ArrayCollection
      * @phpstan-return ArrayCollection<string | int, Entity>
      */
     public function findByField(
-        $value,
+        mixed $value,
         string $field = 'id',
         Includes $includes = null
-    );
+    ): ArrayCollection;
 
     /**
      * Find entities by an array of field values.
      *
      * @phpstan-param array<mixed> $array
-     *
-     * @return ArrayCollection
      * @phpstan-return ArrayCollection<string | int, Entity>
      */
     public function findByArray(
         array $array,
         string $field = 'id',
         Includes $includes = null
-    );
+    ): ArrayCollection;
 
     /**
      * Updates or creates an Entity.
      *
-     * @param object $entity
      * @phpstan-param Entity $entity
-     *
-     * @return void
      */
-    public function createOrUpdate($entity);
+    public function createOrUpdate(object $entity): void;
 
     /**
      * Update an existing Entity.
      *
      * @param object $entity
      * @phpstan-param Entity $entity
-     *
-     * @return void
      */
-    public function update($entity, bool $mute = false);
+    public function update(object $entity, bool $mute = false): void;
 
     /**
      * Add a new Entity to the database.
      *
-     * @param object $entity
      * @phpstan-param Entity $entity
-     *
-     * @return void
      */
-    public function add($entity, bool $mute = false);
+    public function add(object $entity, bool $mute = false): void;
 
     /**
      * Delete an Entity from the database.
      *
-     * @param object $entity
      * @phpstan-param Entity $entity
-     *
-     * @return void
      */
-    public function delete($entity, bool $mute = false);
+    public function delete(object $entity, bool $mute = false): void;
 
     /**
      * Flush pending changes to the database.
-     *
-     * @return void
      */
-    public function flush();
+    public function flush(): void;
 
     /**
      * Clears the EntityManager. All entities that are currently managed
      * by this EntityManager become detached.
-     *
-     * @return void
      */
-    public function clear();
+    public function clear(): void;
 }

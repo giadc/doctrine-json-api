@@ -2,50 +2,48 @@
 
 namespace Giadc\DoctrineJsonApi\Filters;
 
+
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
-use Giadc\DoctrineJsonApi\Repositories\Processors;
 use Giadc\JsonApiRequest\Requests\Filters;
 
 /**
  * Class FilterManager
+ *
+ * @phpstan-type CombinedFilter array{
+ *      type: 'combined',
+ *      keys: string[],
+ *      separator?: string,
+ * }
+ *
+ * @phpstan-type BasicFilter array{
+ *      type: 'id'|'keyword'|'date',
+ *      key?: string,
+ * }
+ *
+ * @phpstan-type FilterTypes BasicFilter|CombinedFilter
+ * @phpstan-type FilterInfoArray array<FilterTypes>
  */
 abstract class FilterManager
 {
     /**
-     * @var array
+     * @phpstan-var FilterInfoArray
      */
-    protected $accepted = [];
+    protected array $accepted = [];
 
     /**
-     * @var string
+     * @phpstan-var array<string|int, mixed>
      */
-    protected $searchDql = '';
+    protected array $params = [];
+
+    protected QueryBuilder $qb;
+    protected int $paramInt = 1;
+    protected string $searchDql = '';
 
     /**
-     * @var array
-     */
-    protected $params = [];
-
-    /**
-     * @var array
-     */
-    protected $joins = [];
-
-    /**
-     * @var int
-     */
-    protected $paramInt = 1;
-
-    /**
-     * @var QueryBuilder
-     */
-    protected $qb;
-
-    /**
-     * @param $filters
      * @throws \Exception
      */
-    public function process(QueryBuilder $qb, Filters $filters)
+    public function process(QueryBuilder $qb, Filters $filters): QueryBuilder
     {
         $this->qb = $qb;
 
@@ -63,19 +61,17 @@ abstract class FilterManager
     }
 
     /**
-     * @return array
+     * @phpstan-return array<string|int, mixed>
      */
-    public function getParams()
+    public function getParams(): array
     {
         return $this->params;
     }
 
     /**
-     * @param $key
-     * @param $data
      * @throws \Exception
      */
-    private function processFilter($key, $data)
+    private function processFilter(string $key, mixed $data): void
     {
         $info   = $this->accepted[$key];
         $key    = $this->getValidKey($info, $key);
@@ -89,16 +85,18 @@ abstract class FilterManager
         call_user_func($method, $data, $key);
     }
 
-    private function getValidKey($info, $key)
+    /**
+     * @phpstan-param FilterTypes $info
+     */
+    private function getValidKey(array $info, string $key): string
     {
         return $key = isset($info['key']) ? $info['key'] : $key;
     }
 
     /**
-     * @param $data
-     * @param $key
+     * @phpstan-param string|string[] $key
      */
-    private function idBuilder($data, $key)
+    private function idBuilder(mixed $data, string|array $key): void
     {
         if (is_array($key)) {
             $this->buildMultiple($data, $key);
@@ -107,7 +105,7 @@ abstract class FilterManager
         }
     }
 
-    private function getKey($key)
+    private function getKey(string $key): string
     {
         if (strpos($key, ".") !== false) {
             $this->addInclude(explode('.', $key)[0]);
@@ -118,10 +116,9 @@ abstract class FilterManager
     }
 
     /**
-     * @param $data
-     * @param $keys
+     * @phpstan-param string[] $keys
      */
-    private function buildMultiple($data, $keys)
+    private function buildMultiple(mixed $data, array $keys): void
     {
         $conditions = [];
 
@@ -137,11 +134,7 @@ abstract class FilterManager
         $this->setParameter($this->paramInt, $data);
     }
 
-    /**
-     * @param $data
-     * @param $key
-     */
-    private function buildSingle($data, $key)
+    private function buildSingle(mixed $data, string $key): void
     {
         if (is_array($data) && count($data) > 1) {
             $this->qb->andWhere($this->qb->expr()->in($this->getKey($key), '?' . $this->paramInt));
@@ -157,10 +150,9 @@ abstract class FilterManager
     }
 
     /**
-     * @param $data
-     * @param $key
+     * @phpstan-param string|string[] $keys
      */
-    private function keywordBuilder($data, $keys)
+    private function keywordBuilder(mixed $data, string|array $keys): void
     {
         if (is_array($keys)) {
             $conditions = $this->buildMultipleConditions($data, $keys);
@@ -174,7 +166,11 @@ abstract class FilterManager
         $this->qb->andWhere($orX);
     }
 
-    private function buildMultipleConditions($data, $keys)
+    /**
+     * @phpstan-param string[] $keys
+     * @phpstan-return array<\Doctrine\ORM\Query\Expr\Comparison>
+     */
+    private function buildMultipleConditions(mixed $data, array $keys): array
     {
         $conditions = [];
 
@@ -185,13 +181,17 @@ abstract class FilterManager
         return $conditions;
     }
 
-    private function buildSingleConditions($data, $key)
+    /**
+     * @phpstan-return array<\Doctrine\ORM\Query\Expr\Comparison>
+     */
+    private function buildSingleConditions(mixed $data, string $key): array
     {
         $conditions = [];
 
         foreach ($data as $field) {
-            $conditions[] = $this->qb->expr()
-                ->like($this->getKey($key), '?' . $this->paramInt);
+            array_push($conditions, $this->qb->expr()
+                ->like($this->getKey($key), '?' . $this->paramInt)
+            );
 
             $this->setParameter($this->paramInt, '%' . $field . '%');
         }
@@ -201,14 +201,11 @@ abstract class FilterManager
 
     /**
      * Build a `combined` filter
-     *
-     * @param  array        $data
-     * @param  array|string $keys
-     * @return void
      */
-    private function combinedBuilder($data, $keys)
+    private function combinedBuilder(mixed $data, string $key): void
     {
-        $info      = $this->accepted[$keys];
+        /** @phpstan-var CombinedFilter */
+        $info      = $this->accepted[$key];
         $separator = isset($info['separator']) ? $info['separator'] : ' ';
 
         $conditions = $this->buildCombinedConditions($data, $info['keys'], $separator);
@@ -221,11 +218,10 @@ abstract class FilterManager
     /**
      * Build a single `combined` condition
      *
-     * @param  array  $data
-     * @param  array  $keys
-     * @param  string $separator
+     * @phpstan-param string[] $keys
+     * @phpstan-return array<\Doctrine\ORM\Query\Expr\Comparison>
      */
-    private function buildCombinedConditions($data, $keys, $separator): array
+    private function buildCombinedConditions(mixed $data, array $keys, string $separator): array
     {
         $conditions = [];
         $concatArrays = $this->getConcatArrays($keys, $separator);
@@ -249,11 +245,10 @@ abstract class FilterManager
     /**
      * Returns an array to be used with Doctrine's CONCAT function
      *
-     * @param  array  $keys
-     * @param  string $separator
-     * @return array
+     * @phpstan-param string[] $keys
+     * @phpstan-return array<string, array<\Doctrine\ORM\Query\Expr\Literal|string>>
      */
-    private function getConcatArrays($keys, $separator)
+    private function getConcatArrays(array $keys, string $separator): array
     {
         $concatArray = [];
 
@@ -273,11 +268,10 @@ abstract class FilterManager
     }
 
     /**
-     * @param $data
-     * @param $key
+     * @phpstan-param string|string[] $keys
      * @throws \Exception
      */
-    private function dateBuilder($data, $keys)
+    private function dateBuilder(mixed $data, string|array $keys): QueryBuilder
     {
         if (!is_array($keys)) {
             return $this->qb->andWhere($this->buildSingleDate($data, $keys));
@@ -296,7 +290,7 @@ abstract class FilterManager
         return $this->qb->andWhere($sql);
     }
 
-    private function buildSingleDate($data, $key)
+    private function buildSingleDate(mixed $data, string $key): string
     {
         if (is_array($data)) {
             $data = $data[0];
@@ -322,28 +316,20 @@ abstract class FilterManager
         return $sql;
     }
 
-    /**
-     * @param $key
-     * @param $value
-     */
-    private function setParameter($key, $value)
+    private function setParameter(string|int $key, mixed $value): void
     {
         $this->params[$key] = $value;
         $this->paramInt     = $this->paramInt + 1;
     }
 
-    /**
-     * @param $date
-     * @return bool
-     */
-    private function validateDate($date)
+    private function validateDate(string $date): bool
     {
         $d = \DateTime::createFromFormat('m/d/Y', $date);
 
         return $d && $d->format('m/d/Y') == $date;
     }
 
-    private function addInclude($include)
+    private function addInclude(string $include): void
     {
         if (!$this->hasInclude($include)) {
             throw new \Exception('Invalid Include: ' . $include);
@@ -356,7 +342,7 @@ abstract class FilterManager
         $this->qb->leftJoin('e.' . $include, $include);
     }
 
-    private function includeExists($include)
+    private function includeExists(string $include): bool
     {
         foreach ($this->qb->getDQLPart('join') as $joins) {
             foreach ($joins as $join) {
@@ -369,14 +355,14 @@ abstract class FilterManager
         return false;
     }
 
-    protected function hasInclude($include)
+    protected function hasInclude(string $include): bool
     {
         $associations = $this->getClassMetadata()->getAssociationMappings();
 
         return array_key_exists($include, $associations);
     }
 
-    protected function getClassMetadata()
+    protected function getClassMetadata(): ClassMetadata
     {
         $class = $this->qb->getDQLPart('from')[0]->getFrom();
         return $this->qb->getEntityManager()->getClassMetadata($class);
