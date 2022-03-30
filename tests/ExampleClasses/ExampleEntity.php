@@ -2,43 +2,38 @@
 
 namespace Giadc\DoctrineJsonApi\Tests;
 
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Giadc\JsonApiResponse\Interfaces\JsonApiResource;
 
 class ExampleEntity implements JsonApiResource
 {
-    /** @var string **/
-    private $id;
+    private string|int $id;
 
-    /** @var string **/
-    private $name;
+    private string $name;
 
-    /** @var int **/
-    private $width;
+    private int $width;
 
+    private int $height;
 
-    /** @var int **/
-    private $height;
-
-    /** @var \DateTime **/
-    private $runDate;
+    private DateTime $runDate;
 
     /** @phpstan-var Collection<int, ExampleRelationshipEntity> **/
-    private $relationships;
+    private Collection $relationships;
 
     public function __construct(
         string $id,
         string $name = 'Example Entity',
         int $width = 10,
         int $height = 20,
-        \DateTime $runDate = null
+        DateTime $runDate = null
     ) {
         $this->id      = $id;
         $this->name    = $name;
         $this->width   = $width;
         $this->height  = $height;
-        $this->runDate = is_null($runDate) ? new \DateTime() : $runDate;
+        $this->runDate = is_null($runDate) ? new DateTime() : $runDate;
 
         $this->relationships = new ArrayCollection();
     }
@@ -50,31 +45,24 @@ class ExampleEntity implements JsonApiResource
 
     /**
      * Gets the value of id.
-     *
-     * @return mixed
      */
-    public function id()
+    public function id(): string
     {
         return $this->id;
     }
 
     /**
      * Gets the value of name.
-     *
-     * @return mixed
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
      * Sets the value of name.
-     *
-     * @param mixed $name the name
-     * @return self
      */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->name = $name;
         return $this;
@@ -82,21 +70,16 @@ class ExampleEntity implements JsonApiResource
 
     /**
      * Gets the value of width.
-     *
-     * @return mixed
      */
-    public function getWidth()
+    public function getWidth(): int
     {
         return $this->width;
     }
 
     /**
      * Sets the value of width.
-     *
-     * @param mixed $width the width
-     * @return self
      */
-    public function setWidth($width)
+    public function setWidth(int $width): self
     {
         $this->width = $width;
         return $this;
@@ -104,21 +87,16 @@ class ExampleEntity implements JsonApiResource
 
     /**
      * Gets the value of height.
-     *
-     * @return mixed
      */
-    public function getHeight()
+    public function getHeight(): int
     {
         return $this->height;
     }
 
     /**
      * Sets the value of height.
-     *
-     * @param mixed $height the height
-     * @return self
      */
-    public function setHeight($height)
+    public function setHeight(int $height): self
     {
         $this->height = $height;
         return $this;
@@ -126,21 +104,16 @@ class ExampleEntity implements JsonApiResource
 
     /**
      * Gets the value of runDate.
-     *
-     * @return mixed
      */
-    public function getRunDate()
+    public function getRunDate(): DateTime
     {
         return $this->runDate;
     }
 
     /**
      * Sets the value of runDate.
-     *
-     * @param mixed $runDate the run date
-     * @return self
      */
-    public function setRunDate($runDate)
+    public function setRunDate(DateTime $runDate): self
     {
         $this->runDate = $runDate;
         return $this;
@@ -158,11 +131,8 @@ class ExampleEntity implements JsonApiResource
 
     /**
      * Add a new relationship
-     *
-     * @param  ExampleRelationshipEntity $relationship
-     * @return self
      */
-    public function addRelationship(ExampleRelationshipEntity $relationship)
+    public function addRelationship(ExampleRelationshipEntity $relationship): self
     {
         $this->relationships->add($relationship);
         $relationship->setParent($this);
@@ -172,11 +142,8 @@ class ExampleEntity implements JsonApiResource
 
     /**
      * Remove a relationship
-     *
-     * @param  ExampleRelationshipEntity $relationship
-     * @return self
      */
-    public function removeRelationship(ExampleRelationshipEntity $relationship)
+    public function removeRelationship(ExampleRelationshipEntity $relationship): self
     {
         if ($this->relationships->contains($relationship)) {
             $this->relationships->removeElement($relationship);
