@@ -16,12 +16,17 @@ use Giadc\JsonApiRequest\Requests\Filters;
  *      separator?: string,
  * }
  *
+ * @phpstan-type DateFilter array{
+ *      type: 'date',
+ *      key?: string|string[],
+ * }
+ *
  * @phpstan-type BasicFilter array{
- *      type: 'id'|'keyword'|'date',
+ *      type: 'id'|'keyword'|'null',
  *      key?: string,
  * }
  *
- * @phpstan-type FilterTypes BasicFilter|CombinedFilter
+ * @phpstan-type FilterTypes BasicFilter|CombinedFilter|DateFilter
  * @phpstan-type FilterInfoArray array<FilterTypes>
  */
 abstract class FilterManager
@@ -189,14 +194,40 @@ abstract class FilterManager
         $conditions = [];
 
         foreach ($data as $field) {
-            array_push($conditions, $this->qb->expr()
-                ->like($this->getKey($key), '?' . $this->paramInt)
+            array_push(
+                $conditions,
+                $this->qb->expr()
+                    ->like($this->getKey($key), '?' . $this->paramInt)
             );
 
             $this->setParameter($this->paramInt, '%' . $field . '%');
         }
 
         return $conditions;
+    }
+
+    protected function nullBuilder(mixed $data, string $key): void
+    {
+        if (is_array($data)) {
+            $data = $data[0];
+        }
+
+        switch ($data) {
+            case 1:
+                $expr = $this->qb->expr()->isNotNull('e.' . $key);
+                break;
+            case -1:
+                $expr = null;
+                break;
+            case 0:
+            default:
+                $expr = $this->qb->expr()->isNull('e.' . $key);
+                break;
+        }
+
+        if ($expr !== null) {
+            $this->qb->andWhere($expr);
+        }
     }
 
     /**

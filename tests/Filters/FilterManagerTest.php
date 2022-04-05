@@ -3,22 +3,23 @@
 use Giadc\JsonApiRequest\Requests\Filters;
 use Giadc\DoctrineJsonApi\Tests\ExampleFilters;
 use Giadc\DoctrineJsonApi\Tests\ExampleEntity;
-use Giadc\DoctrineJsonApi\Tests\ExampleRelationshipEntity;
 use PHPUnit\Framework\TestCase;
 
 class FilterManagerTest extends TestCase
 {
+    protected ?ExampleFilters $filterManager = null;
+
     public function setUp(): void
     {
         $this->filterManager = new ExampleFilters();
     }
 
-    public function test_it_returns_the_params()
+    public function test_it_returns_the_params(): void
     {
-        $this->assertTrue(is_array($this->filterManager->getParams()));
+        $this->assertTrue(is_array($this->filterManager?->getParams()));
     }
 
-    public function test_it_processes_the_filters()
+    public function test_it_processes_the_filters(): void
     {
         $entityManager = EntityManagerFactory::createEntityManager();
         $qb            = $entityManager->createQueryBuilder();
@@ -26,19 +27,22 @@ class FilterManagerTest extends TestCase
         $qb->select('e')->from(ExampleEntity::class, 'e');
 
         $filters = new Filters([
-            'id'    => '123',
-            'name'  => 'Eduardo',
-            'size'  => '10x10',
+            'id' => '123',
+            'name' => 'Eduardo',
+            'deleted' => 0,
+            'size' => '10x10',
             'dates' => '01/01/2016-02/02/2020',
         ]);
 
-        $result = $this->filterManager->process($qb, $filters)->getQuery();
+        $result = $this->filterManager?->process($qb, $filters)->getQuery();
+        $this->assertNotNull($result, 'FilterManager could not be found');
 
         $expectedDQL = "SELECT e FROM " . ExampleEntity::class . " e " .
             "WHERE e.id = ?1 " .
-                "AND e.name LIKE ?2 " .
-                "AND CONCAT(e.width, 'x', e.height) LIKE ?3 " .
-                "AND (e.runDate BETWEEN ?4 AND ?5)";
+            "AND e.name LIKE ?2 " .
+            "AND e.deletedAt IS NULL " .
+            "AND CONCAT(e.width, 'x', e.height) LIKE ?3 " .
+            "AND (e.runDate BETWEEN ?4 AND ?5)";
 
         $this->assertEquals($expectedDQL, $result->getDql());
 
@@ -72,12 +76,13 @@ class FilterManagerTest extends TestCase
             'combined' => 'summer asdf'
         ]);
 
-        $result = $this->filterManager->process($qb, $filters)->getQuery();
+        $result = $this->filterManager?->process($qb, $filters)->getQuery();
+        $this->assertNotNull($result, 'FilterManager could not be found');
 
-        $expectedDQL = "SELECT e FROM " . ExampleEntity::class . " e ".
-            "LEFT JOIN e.relationships relationships ".
-            "WHERE e.name LIKE ?1 ".
-                "OR CONCAT(relationships.firstName, ' ', relationships.lastName) LIKE ?1";
+        $expectedDQL = "SELECT e FROM " . ExampleEntity::class . " e " .
+            "LEFT JOIN e.relationships relationships " .
+            "WHERE e.name LIKE ?1 " .
+            "OR CONCAT(relationships.firstName, ' ', relationships.lastName) LIKE ?1";
 
         $this->assertEquals($expectedDQL, $result->getDql());
 

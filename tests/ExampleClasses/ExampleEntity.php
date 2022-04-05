@@ -9,9 +9,11 @@ use Giadc\JsonApiResponse\Interfaces\JsonApiResource;
 
 class ExampleEntity implements JsonApiResource
 {
-    private string|int $id;
+    private string $id;
 
     private string $name;
+
+    private ?DateTime $deletedAt = null;
 
     private int $width;
 
@@ -65,6 +67,23 @@ class ExampleEntity implements JsonApiResource
     public function setName(string $name): self
     {
         $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * Gets the value of deletedAt.
+     */
+    public function getDeletedAt(): ?DateTime
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * Sets the value of deletedAt.
+     */
+    public function setDeletedAt(DateTime $deletedAt): self
+    {
+        $this->deletedAt = $deletedAt;
         return $this;
     }
 
@@ -154,7 +173,7 @@ class ExampleEntity implements JsonApiResource
     }
 
     /**
-     * @phpstan-return array<string, string|int|bool>
+     * @phpstan-return array<string, string|int|bool|null>
      */
     public function jsonSerialize(): array
     {
@@ -164,6 +183,7 @@ class ExampleEntity implements JsonApiResource
             'width' => $this->width,
             'height' => $this->height,
             'runDate' => $this->runDate->format(DATE_ISO8601),
+            'deletedAt' => $this->deletedAt?->format(DATE_ISO8601),
         ];
     }
 }

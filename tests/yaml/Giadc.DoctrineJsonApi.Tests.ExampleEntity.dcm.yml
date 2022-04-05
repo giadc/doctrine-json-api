@@ -21,6 +21,9 @@ Giadc\DoctrineJsonApi\Tests\ExampleEntity:
         runDate:
             type: datetime
             column: run_date
+        deletedAt:
+            type: datetime
+            column: deleted_at
     oneToMany:
         relationships:
             targetEntity: Giadc\DoctrineJsonApi\Tests\ExampleRelationshipEntity
