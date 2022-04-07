@@ -22,10 +22,8 @@ abstract class DoctrineJsonApiTestCase extends TestCase
 
     /**
      * Get the Entity Manager, creating it if necessary
-     *
-     * @return \Doctrine\ORM\EntityManager
      */
-    public function getEntityManager()
+    public function getEntityManager(): EntityManager
     {
         if (is_null($this->entityManager)) {
             $this->entityManager = EntityManagerFactory::createEntityManager();
