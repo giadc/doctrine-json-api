@@ -12,6 +12,7 @@ use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\Pagination;
 use Giadc\JsonApiRequest\Requests\RequestParams;
 use Giadc\JsonApiRequest\Requests\Sorting;
+use Giadc\JsonApiResponse\Pagination\FractalDoctrinePaginatorAdapter;
 
 /**
  * @template Entity of \Giadc\JsonApiResponse\Interfaces\JsonApiResource
@@ -41,12 +42,11 @@ abstract class AbstractJsonApiDoctrineRepository
      * Paginate entities with Includes, Sorting, and Filters.
      *
      * @phpstan-param array<string> $additionalIncludes
-     * @phpstan-return Paginator<Entity>
      */
     public function paginateAll(
         RequestParams $params,
         array $additionalIncludes = []
-    ): Paginator {
+    ): FractalDoctrinePaginatorAdapter {
         $qb = $this->em->createQueryBuilder();
         $includes = $params->getIncludes();
         $includes->add($additionalIncludes);
@@ -60,7 +60,8 @@ abstract class AbstractJsonApiDoctrineRepository
             $qb = $this->filters->process($qb, $params->getFiltersDetails());
         }
 
-        return $this->paginate($qb, $params->getPageDetails());
+        $paginator = $this->paginate($qb, $params->getPageDetails());
+        return new FractalDoctrinePaginatorAdapter($paginator, $params);
     }
 
     /**
@@ -407,10 +408,12 @@ abstract class AbstractJsonApiDoctrineRepository
 
     /**
      * Return the metadata mapping for the current Class.
+     * @phpstan-return ClassMetadata<Entity>|null
      */
     protected function getClassMetadata(string $class = null): ?ClassMetadata
     {
         try {
+            /** @phpstan-ignore-next-line */
             return $this->em->getClassMetadata($class ?? $this->class);
         } catch (MappingException $e) {
             return null;
