@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Giadc\DoctrineJsonApi\Repositories;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -8,14 +10,17 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\Mapping\MappingException;
+use Giadc\DoctrineJsonApi\Pagination\FractalDoctrinePaginatorAdapter;
+use Giadc\DoctrineJsonApi\Pagination\PaginatedCollection;
 use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\Pagination;
 use Giadc\JsonApiRequest\Requests\RequestParams;
 use Giadc\JsonApiRequest\Requests\Sorting;
-use Giadc\JsonApiResponse\Pagination\FractalDoctrinePaginatorAdapter;
 
 /**
- * @template Entity of \Giadc\JsonApiResponse\Interfaces\JsonApiResource
+ * @phpstan-template Entity of \Giadc\JsonApiResponse\Interfaces\JsonApiResource
+ * @phpstan-type SortDetails array{field: string, direction: 'ASC'|'DESC'}
+ * @phpstan-type SortArray array<string, SortDetails>
  */
 abstract class AbstractJsonApiDoctrineRepository
 {
@@ -30,8 +35,7 @@ abstract class AbstractJsonApiDoctrineRepository
      * Get the default Sorting for the repository.
      *
      * example: ['domain' => ['field' => 'domain', 'direction' => 'ASC']]
-     *
-     * @phpstan-return array <string, array{field: string, direction: string}>
+     * @phpstan-return SortArray
      */
     protected function getDefaultSort(): array
     {
@@ -46,7 +50,7 @@ abstract class AbstractJsonApiDoctrineRepository
     public function paginateAll(
         RequestParams $params,
         array $additionalIncludes = []
-    ): FractalDoctrinePaginatorAdapter {
+    ): PaginatedCollection {
         $qb = $this->em->createQueryBuilder();
         $includes = $params->getIncludes();
         $includes->add($additionalIncludes);
@@ -61,13 +65,14 @@ abstract class AbstractJsonApiDoctrineRepository
         }
 
         $paginator = $this->paginate($qb, $params->getPageDetails());
-        return new FractalDoctrinePaginatorAdapter($paginator, $params);
+        $fractalPaginator = new FractalDoctrinePaginatorAdapter($paginator, $params);
+        return new PaginatedCollection($paginator, $fractalPaginator);
     }
 
     /**
      * Find an entity by ID.
      *
-     * @phpstan-return Entity | null
+     * @phpstan-return Entity|null
      */
     public function findById(string|int $value, Includes $includes = null): ?object
     {
@@ -79,7 +84,7 @@ abstract class AbstractJsonApiDoctrineRepository
     /**
      * Find entity by field value.
      *
-     * @phpstan-return Entity | null
+     * @phpstan-return Entity|null
      */
     public function findOneByField(
         mixed $value,

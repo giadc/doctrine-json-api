@@ -1,11 +1,8 @@
 <?php
 
-namespace Giadc\DoctrineJsonApi\Repositories;
+declare(strict_types=1);
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Tools\Pagination\Paginator;
-use Giadc\JsonApiRequest\Requests\Includes;
-use Giadc\JsonApiRequest\Requests\RequestParams;
+namespace Giadc\DoctrineJsonApi\Repositories;
 
 /**
  * @template Entity of \Giadc\JsonApiResponse\Interfaces\JsonApiResource
@@ -22,7 +19,6 @@ interface WriteJsonApiRepositoryInterface
     /**
      * Update an existing Entity.
      *
-     * @param object $entity
      * @phpstan-param Entity $entity
      */
     public function update(object $entity, bool $mute = false): void;

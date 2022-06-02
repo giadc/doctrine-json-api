@@ -1,21 +1,21 @@
 <?php
 
-use Giadc\JsonApiResponse\Pagination\FractalDoctrinePaginatorAdapter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Giadc\DoctrineJsonApi\Exceptions\EntityCannotBeFoundException;
+use Giadc\DoctrineJsonApi\Pagination\PaginatedCollection;
 use Giadc\DoctrineJsonApi\Tests\ExampleEntity;
-use Giadc\DoctrineJsonApi\Tests\ExampleFilters;
 use Giadc\DoctrineJsonApi\Tests\ExampleReadService;
 use Giadc\DoctrineJsonApi\Tests\ExampleRepository;
 
 class AbstractReadServiceTest extends DoctrineJsonApiTestCase
 {
+    protected ExampleReadService $exampleReadService;
     public function setUp(): void
     {
         parent::setUp();
 
         $exampleRepository = new ExampleRepository($this->getEntityManager());
-        $this->exampleReadService = new ExampleReadService($exampleRepository, new ExampleFilters());
+        $this->exampleReadService = new ExampleReadService($exampleRepository);
     }
 
     public function test_it_finds_an_entity_by_id(): void
@@ -61,7 +61,7 @@ class AbstractReadServiceTest extends DoctrineJsonApiTestCase
     public function test_it_paginates_entities(): void
     {
         $result = $this->exampleReadService->paginate(['relationships']);
-        $this->assertInstanceOf(FractalDoctrinePaginatorAdapter::class, $result);
-        $this->assertEquals(5, $result->getCount());
+        $this->assertInstanceOf(PaginatedCollection::class, $result);
+        $this->assertEquals(5, $result->data()->count());
     }
 }

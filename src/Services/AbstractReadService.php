@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Giadc\DoctrineJsonApi\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Giadc\DoctrineJsonApi\Exceptions\EntityCannotBeFoundException;
+use Giadc\DoctrineJsonApi\Pagination\PaginatedCollection;
 use Giadc\DoctrineJsonApi\Repositories\AbstractJsonApiRepositoryInterface;
 use Giadc\JsonApiRequest\Requests\RequestParams;
-use Giadc\JsonApiResponse\Pagination\FractalDoctrinePaginatorAdapter;
 
 /**
  * @template Entity of \Giadc\JsonApiResponse\Interfaces\JsonApiResource
@@ -118,7 +120,7 @@ abstract class AbstractReadService
      *
      * @phpstan-param  string[] $additionalIncludes
      */
-    public function paginate(array $additionalIncludes = []): FractalDoctrinePaginatorAdapter
+    public function paginate(array $additionalIncludes = []): PaginatedCollection
     {
         return $this->repo->paginateAll($this->requestParams, $additionalIncludes);
     }

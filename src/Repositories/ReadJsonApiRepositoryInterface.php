@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Giadc\DoctrineJsonApi\Repositories;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Giadc\DoctrineJsonApi\Pagination\PaginatedCollection;
 use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\RequestParams;
-use Giadc\JsonApiResponse\Pagination\FractalDoctrinePaginatorAdapter;
 
 /**
  * @template Entity of \Giadc\JsonApiResponse\Interfaces\JsonApiResource
@@ -20,12 +22,12 @@ interface ReadJsonApiRepositoryInterface
     public function paginateAll(
         RequestParams $params,
         array $additionalIncludes = []
-    ): FractalDoctrinePaginatorAdapter;
+    ): PaginatedCollection;
 
     /**
      * Find an entity by ID.
      *
-     * @phpstan-return Entity | null
+     * @phpstan-return Entity|null
      */
     public function findById(
         string|int $value,
@@ -35,7 +37,7 @@ interface ReadJsonApiRepositoryInterface
     /**
      * Find entity by field value.
      *
-     * @phpstan-return Entity | null
+     * @phpstan-return Entity|null
      */
     public function findOneByField(
         mixed $value,
