@@ -46,6 +46,7 @@ abstract class AbstractJsonApiDoctrineRepository
      * Paginate entities with Includes, Sorting, and Filters.
      *
      * @phpstan-param array<string> $additionalIncludes
+     * @phpstan-return PaginatedCollection<int|string, Entity>
      */
     public function paginateAll(
         RequestParams $params,
@@ -66,7 +67,7 @@ abstract class AbstractJsonApiDoctrineRepository
 
         $paginator = $this->paginate($qb, $params->getPageDetails());
         $fractalPaginator = new FractalDoctrinePaginatorAdapter($paginator, $params);
-        return new PaginatedCollection($paginator, $fractalPaginator);
+        return new PaginatedCollection((array) $paginator->getIterator(), $fractalPaginator);
     }
 
     /**

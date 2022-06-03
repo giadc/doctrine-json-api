@@ -62,6 +62,6 @@ class AbstractReadServiceTest extends DoctrineJsonApiTestCase
     {
         $result = $this->exampleReadService->paginate(['relationships']);
         $this->assertInstanceOf(PaginatedCollection::class, $result);
-        $this->assertEquals(5, $result->data()->count());
+        $this->assertEquals(5, $result->getCount());
     }
 }
