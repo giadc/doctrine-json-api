@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Giadc\DoctrineJsonApi\Repositories;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Giadc\DoctrineJsonApi\Pagination\PaginatedCollection;
 use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\RequestParams;
+use Giadc\JsonApiResponse\Pagination\PaginatedCollection;
 
 /**
  * @template Entity of \Giadc\JsonApiResponse\Interfaces\JsonApiResource
@@ -15,9 +15,11 @@ use Giadc\JsonApiRequest\Requests\RequestParams;
 interface ReadJsonApiRepositoryInterface
 {
     /**
-     * Paginate entities with Includes, Sorting, and Filters.
+     * Returns paginated list of Entities with
+     * optional Filtering, Sorting, & Includes
      *
      * @phpstan-param array<string> $additionalIncludes
+     * @phpstan-return PaginatedCollection<string|int, Entity>
      */
     public function paginateAll(
         RequestParams $params,

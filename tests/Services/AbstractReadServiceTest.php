@@ -2,10 +2,10 @@
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Giadc\DoctrineJsonApi\Exceptions\EntityCannotBeFoundException;
-use Giadc\DoctrineJsonApi\Pagination\PaginatedCollection;
 use Giadc\DoctrineJsonApi\Tests\ExampleEntity;
 use Giadc\DoctrineJsonApi\Tests\ExampleReadService;
 use Giadc\DoctrineJsonApi\Tests\ExampleRepository;
+use Giadc\JsonApiResponse\Pagination\PaginatedCollection;
 
 class AbstractReadServiceTest extends DoctrineJsonApiTestCase
 {

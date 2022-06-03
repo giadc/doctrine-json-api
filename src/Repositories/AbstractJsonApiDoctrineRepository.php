@@ -11,11 +11,11 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\Mapping\MappingException;
 use Giadc\DoctrineJsonApi\Pagination\FractalDoctrinePaginatorAdapter;
-use Giadc\DoctrineJsonApi\Pagination\PaginatedCollection;
 use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\Pagination;
 use Giadc\JsonApiRequest\Requests\RequestParams;
 use Giadc\JsonApiRequest\Requests\Sorting;
+use Giadc\JsonApiResponse\Pagination\PaginatedCollection;
 
 /**
  * @phpstan-template Entity of \Giadc\JsonApiResponse\Interfaces\JsonApiResource

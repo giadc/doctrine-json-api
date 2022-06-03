@@ -1,7 +1,6 @@
 <?php
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Giadc\DoctrineJsonApi\Pagination\PaginatedCollection;
 use Giadc\DoctrineJsonApi\Tests\ExampleEntity;
 use Giadc\DoctrineJsonApi\Tests\ExampleFilters;
 use Giadc\DoctrineJsonApi\Tests\ExampleRelationshipEntity;
@@ -11,6 +10,7 @@ use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\Pagination;
 use Giadc\JsonApiRequest\Requests\RequestParams;
 use Giadc\JsonApiRequest\Requests\Sorting;
+use Giadc\JsonApiResponse\Pagination\PaginatedCollection;
 use Mockery as m;
 
 class AbstractJsonApiDoctrineRepositoryTest extends \DoctrineJsonApiTestCase
