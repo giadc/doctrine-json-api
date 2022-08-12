@@ -9,7 +9,7 @@ use Giadc\JsonApiRequest\Requests\RequestParams;
 use League\Fractal\Pagination\PaginatorInterface;
 
 /**
- * @template Entity of \Giadc\JsonApiResponse\Interfaces\JsonApiResource
+ * @phpstan-template Entity of \Giadc\JsonApiResponse\Interfaces\JsonApiResource
  */
 final class FractalDoctrinePaginatorAdapter implements PaginatorInterface
 {
@@ -58,7 +58,7 @@ final class FractalDoctrinePaginatorAdapter implements PaginatorInterface
         $paginator = $this->request->getPageDetails();
         $resultsPerPage = $paginator->getPageSize();
 
-        return ceil($this->getTotal() / $resultsPerPage);
+        return (int) ceil($this->getTotal() / $resultsPerPage);
     }
 
     /**
