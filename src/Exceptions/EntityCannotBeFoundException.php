@@ -4,11 +4,11 @@ namespace Giadc\DoctrineJsonApi\Exceptions;
 
 class EntityCannotBeFoundException extends \Exception
 {
-    private $id;
+    private string $id;
 
-    private $entityName;
+    private string $entityName;
 
-    public function __construct($entityName, $id, \Exception $previous = null, $code = 0)
+    public function __construct(string $entityName, string $id, \Exception $previous = null, int $code = 0)
     {
         $this->id = $id;
         $this->entityName = $entityName;
@@ -22,14 +22,13 @@ class EntityCannotBeFoundException extends \Exception
         parent::__construct($message, $code, $previous);
     }
 
-    public function id()
+    public function id(): string
     {
         return $this->id;
     }
 
-    public function entityName()
+    public function entityName(): string
     {
         return $this->entityName;
     }
 }
-

@@ -6,11 +6,9 @@ use Giadc\JsonApiResponse\Interfaces\JsonApiResource;
 
 class ExampleRelationshipEntity implements JsonApiResource
 {
-    /** @var string */
-    private $id;
+    private string $id;
 
-    /** @var ExampleEntity|null */
-    private $parent;
+    private ?ExampleEntity $parent = null;
 
     public function __construct(string $id)
     {
@@ -27,7 +25,7 @@ class ExampleRelationshipEntity implements JsonApiResource
      *
      * @return string
      */
-    public function id()
+    public function id(): string
     {
         return $this->id;
     }
@@ -50,7 +48,10 @@ class ExampleRelationshipEntity implements JsonApiResource
     }
 
 
-    public function jsonSerialize()
+    /**
+     * @phpstan-return array<string, string|int|bool>
+     */
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->id,
