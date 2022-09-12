@@ -15,8 +15,8 @@
     "require": {
         "php": ">=8.1",
         "doctrine/orm": "^2.11",
-        "giadc/json-api-request": "dev-php-8-1",
-        "giadc/json-api-response": "dev-php-8",
+        "giadc/json-api-request": "~3.0.0",
+        "giadc/json-api-response": "~3.0.0",
         "symfony/cache": "^6.0"
     },
     "require-dev": {
