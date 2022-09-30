@@ -53,7 +53,10 @@ abstract class FilterManager
         $this->qb = $qb;
 
         foreach ($filters->toArray() as $key => $data) {
-            if (array_key_exists($key, $this->accepted)) {
+            if (
+                count($data) > 0
+                && array_key_exists($key, $this->accepted)
+            ) {
                 $this->processFilter($key, $data);
             }
         }
