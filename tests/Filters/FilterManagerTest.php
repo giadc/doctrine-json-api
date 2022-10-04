@@ -99,4 +99,26 @@ class FilterManagerTest extends TestCase
         ];
         $this->assertEquals($expectedParamArray, $paramArray);
     }
+
+    public function test_it_ignores_empty_filter_values(): void {
+        $entityManager = EntityManagerFactory::createEntityManager();
+        $qb            = $entityManager->createQueryBuilder();
+
+        $qb->select('e')->from(ExampleEntity::class, 'e');
+
+        $filters = new Filters([
+            'id' => '',
+            'name' => '',
+            'deleted' => '',
+            'size' => '',
+            'dates' => '',
+        ]);
+
+        $result = $this->filterManager?->process($qb, $filters)->getQuery();
+        $this->assertNotNull($result, 'FilterManager could not be found');
+
+        // No WHERE clauses
+        $expectedDQL = sprintf("SELECT e FROM %s e", ExampleEntity::class);
+        $this->assertEquals($expectedDQL, $result->getDql());
+    }
 }

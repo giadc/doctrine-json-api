@@ -53,7 +53,10 @@ abstract class FilterManager
         $this->qb = $qb;
 
         foreach ($filters->toArray() as $key => $data) {
-            if (array_key_exists($key, $this->accepted)) {
+            if (
+                count($data) > 0
+                && array_key_exists($key, $this->accepted)
+            ) {
                 $this->processFilter($key, $data);
             }
         }
@@ -76,7 +79,7 @@ abstract class FilterManager
     /**
      * @throws \Exception
      */
-    private function processFilter(string $key, mixed $data): void
+    private function processFilter(string $key, array $data): void
     {
         $info   = $this->accepted[$key];
         $key    = $this->getValidKey($info, $key);
@@ -101,7 +104,7 @@ abstract class FilterManager
     /**
      * @phpstan-param string|string[] $key
      */
-    private function idBuilder(mixed $data, string|array $key): void
+    private function idBuilder(array $data, string|array $key): void
     {
         if (is_array($key)) {
             $this->buildMultiple($data, $key);
@@ -123,7 +126,7 @@ abstract class FilterManager
     /**
      * @phpstan-param string[] $keys
      */
-    private function buildMultiple(mixed $data, array $keys): void
+    private function buildMultiple(array $data, array $keys): void
     {
         $conditions = [];
 
@@ -139,7 +142,7 @@ abstract class FilterManager
         $this->setParameter($this->paramInt, $data);
     }
 
-    private function buildSingle(mixed $data, string $key): void
+    private function buildSingle(array $data, string $key): void
     {
         if (is_array($data) && count($data) > 1) {
             $this->qb->andWhere($this->qb->expr()->in($this->getKey($key), '?' . $this->paramInt));
@@ -157,7 +160,7 @@ abstract class FilterManager
     /**
      * @phpstan-param string|string[] $keys
      */
-    private function keywordBuilder(mixed $data, string|array $keys): void
+    private function keywordBuilder(array $data, string|array $keys): void
     {
         if (is_array($keys)) {
             $conditions = $this->buildMultipleConditions($data, $keys);
@@ -175,7 +178,7 @@ abstract class FilterManager
      * @phpstan-param string[] $keys
      * @phpstan-return array<\Doctrine\ORM\Query\Expr\Comparison>
      */
-    private function buildMultipleConditions(mixed $data, array $keys): array
+    private function buildMultipleConditions(array $data, array $keys): array
     {
         $conditions = [];
 
@@ -189,7 +192,7 @@ abstract class FilterManager
     /**
      * @phpstan-return array<\Doctrine\ORM\Query\Expr\Comparison>
      */
-    private function buildSingleConditions(mixed $data, string $key): array
+    private function buildSingleConditions(array $data, string $key): array
     {
         $conditions = [];
 
@@ -206,7 +209,7 @@ abstract class FilterManager
         return $conditions;
     }
 
-    protected function nullBuilder(mixed $data, string $key): void
+    protected function nullBuilder(array $data, string $key): void
     {
         if (is_array($data)) {
             $data = $data[0];
@@ -233,7 +236,7 @@ abstract class FilterManager
     /**
      * Build a `combined` filter
      */
-    private function combinedBuilder(mixed $data, string $key): void
+    private function combinedBuilder(array $data, string $key): void
     {
         /** @phpstan-var CombinedFilter */
         $info      = $this->accepted[$key];
@@ -252,7 +255,7 @@ abstract class FilterManager
      * @phpstan-param string[] $keys
      * @phpstan-return array<\Doctrine\ORM\Query\Expr\Comparison>
      */
-    private function buildCombinedConditions(mixed $data, array $keys, string $separator): array
+    private function buildCombinedConditions(array $data, array $keys, string $separator): array
     {
         $conditions = [];
         $concatArrays = $this->getConcatArrays($keys, $separator);
@@ -302,7 +305,7 @@ abstract class FilterManager
      * @phpstan-param string|string[] $keys
      * @throws \Exception
      */
-    private function dateBuilder(mixed $data, string|array $keys): QueryBuilder
+    private function dateBuilder(array $data, string|array $keys): QueryBuilder
     {
         if (!is_array($keys)) {
             return $this->qb->andWhere($this->buildSingleDate($data, $keys));
@@ -321,7 +324,7 @@ abstract class FilterManager
         return $this->qb->andWhere($sql);
     }
 
-    private function buildSingleDate(mixed $data, string $key): string
+    private function buildSingleDate(array $data, string $key): string
     {
         if (is_array($data)) {
             $data = $data[0];
