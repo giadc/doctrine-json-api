@@ -77,6 +77,8 @@ abstract class FilterManager
     }
 
     /**
+     * @phpstan-param string[] $data
+     *
      * @throws \Exception
      */
     private function processFilter(string $key, array $data): void
@@ -95,13 +97,15 @@ abstract class FilterManager
 
     /**
      * @phpstan-param FilterTypes $info
+     * @phpstan-return string | string[]
      */
-    private function getValidKey(array $info, string $key): string
+    private function getValidKey(array $info, string $key): string | array
     {
         return $key = isset($info['key']) ? $info['key'] : $key;
     }
 
     /**
+     * @phpstan-param string[] $data
      * @phpstan-param string|string[] $key
      */
     private function idBuilder(array $data, string|array $key): void
@@ -113,17 +117,22 @@ abstract class FilterManager
         }
     }
 
-    private function getKey(string $key): string
+    /**
+     * Build the DQL reference for the given column name. If the column is in a
+     * relationship, ensure that the relationship is is included in the DQL joins.
+     */
+    private function getKey(string $column): string
     {
-        if (strpos($key, ".") !== false) {
-            $this->addInclude(explode('.', $key)[0]);
-            return $key;
+        if (strpos($column, ".") !== false) {
+            $this->addInclude(explode('.', $column)[0]);
+            return $column;
         }
 
-        return 'e.' . $key;
+        return 'e.' . $column;
     }
 
     /**
+     * @phpstan-param string[] $data
      * @phpstan-param string[] $keys
      */
     private function buildMultiple(array $data, array $keys): void
@@ -142,6 +151,9 @@ abstract class FilterManager
         $this->setParameter($this->paramInt, $data);
     }
 
+    /**
+     * @phpstan-param string[] $data
+     */
     private function buildSingle(array $data, string $key): void
     {
         if (is_array($data) && count($data) > 1) {
@@ -158,6 +170,7 @@ abstract class FilterManager
     }
 
     /**
+     * @phpstan-param string[] $data
      * @phpstan-param string|string[] $keys
      */
     private function keywordBuilder(array $data, string|array $keys): void
@@ -175,6 +188,7 @@ abstract class FilterManager
     }
 
     /**
+     * @phpstan-param string[] $data
      * @phpstan-param string[] $keys
      * @phpstan-return array<\Doctrine\ORM\Query\Expr\Comparison>
      */
@@ -190,6 +204,7 @@ abstract class FilterManager
     }
 
     /**
+     * @phpstan-param string[] $data
      * @phpstan-return array<\Doctrine\ORM\Query\Expr\Comparison>
      */
     private function buildSingleConditions(array $data, string $key): array
@@ -209,6 +224,9 @@ abstract class FilterManager
         return $conditions;
     }
 
+    /**
+     * @phpstan-param string[] $data
+     */
     protected function nullBuilder(array $data, string $key): void
     {
         if (is_array($data)) {
@@ -235,6 +253,8 @@ abstract class FilterManager
 
     /**
      * Build a `combined` filter
+     *
+     * @phpstan-param string[] $data
      */
     private function combinedBuilder(array $data, string $key): void
     {
@@ -252,6 +272,7 @@ abstract class FilterManager
     /**
      * Build a single `combined` condition
      *
+     * @phpstan-param string[] $data
      * @phpstan-param string[] $keys
      * @phpstan-return array<\Doctrine\ORM\Query\Expr\Comparison>
      */
@@ -302,6 +323,7 @@ abstract class FilterManager
     }
 
     /**
+     * @phpstan-param string[] $data
      * @phpstan-param string|string[] $keys
      * @throws \Exception
      */
@@ -324,6 +346,9 @@ abstract class FilterManager
         return $this->qb->andWhere($sql);
     }
 
+    /**
+     * @phpstan-param string[] $data
+     */
     private function buildSingleDate(array $data, string $key): string
     {
         if (is_array($data)) {
