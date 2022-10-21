@@ -140,15 +140,29 @@ abstract class FilterManager
         $conditions = [];
 
         foreach ($keys as $field) {
-            $conditions[] = $this->qb->expr()
-                ->in($this->getKey($field), '?' . $this->paramInt);
+            if (count($data) === 1) {
+                $conditions[] = $this->qb->expr()->eq(
+                    $this->getKey($field),
+                    '?' . $this->paramInt
+                );
+            } else {
+                $conditions[] = $this->qb->expr()->in(
+                    $this->getKey($field),
+                    '?' . $this->paramInt
+                );
+            }
         }
 
         $orX = $this->qb->expr()->orX();
         $orX->addMultiple($conditions);
 
         $this->qb->andWhere($orX);
-        $this->setParameter($this->paramInt, $data);
+
+        if (count($data) === 1) {
+            $this->setParameter($this->paramInt, $data[0]);
+        } else {
+            $this->setParameter($this->paramInt, $data);
+        }
     }
 
     /**
