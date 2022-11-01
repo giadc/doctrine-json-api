@@ -67,7 +67,7 @@ abstract class AbstractJsonApiDoctrineRepository
 
         $paginator = $this->paginate($qb, $params->getPageDetails());
         $fractalPaginator = new FractalDoctrinePaginatorAdapter($paginator, $params);
-        return new PaginatedCollection((array) $paginator->getIterator(), $fractalPaginator);
+        return new PaginatedCollection(iterator_to_array($paginator->getIterator()), $fractalPaginator);
     }
 
     /**

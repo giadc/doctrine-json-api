@@ -62,6 +62,7 @@ class AbstractJsonApiDoctrineRepositoryTest extends \DoctrineJsonApiTestCase
         $params->shouldReceive('getIncludes')->andReturn($includes);
         $params->shouldReceive('getFiltersDetails')->andReturn($filters);
         $params->shouldReceive('getSortDetails')->andReturn($sorting);
+        $params->shouldReceive('getUri')->andReturn(null);
         $params->shouldReceive('getPageDetails')->andReturn($pagination)
             ->getMock();
 
