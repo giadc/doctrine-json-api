@@ -13,23 +13,9 @@ use League\Fractal\Pagination\PaginatorInterface;
  */
 final class FractalDoctrinePaginatorAdapter implements PaginatorInterface
 {
-    /**
-     * The paginator instance.
-     * @phpstan-var Paginator<Entity>
-     */
-    protected Paginator $paginator;
-
-    /**
-     * The route generator.
-     *
-     * @var callable
-     */
-    protected $routeGenerator;
-
-    /**
-     * The RequestParams instance.
-     */
-    protected RequestParams $request;
+    private int $total;
+    private RequestParams $request;
+    private string|null $url;
 
     /**
      * Create a new doctrine pagination adapter.
@@ -37,8 +23,9 @@ final class FractalDoctrinePaginatorAdapter implements PaginatorInterface
      */
     public function __construct(Paginator $paginator, RequestParams $requestParams)
     {
-        $this->paginator = $paginator;
         $this->request = $requestParams;
+        $this->total = count($paginator);
+        $this->url = $this->request->getUri();
     }
 
     /**
@@ -66,7 +53,7 @@ final class FractalDoctrinePaginatorAdapter implements PaginatorInterface
      */
     public function getTotal(): int
     {
-        return count($this->paginator);
+        return $this->total;
     }
 
     /**
@@ -94,28 +81,30 @@ final class FractalDoctrinePaginatorAdapter implements PaginatorInterface
      */
     public function getUrl(int $page): string
     {
-        $url = $this->request->getUri();
         $params = $this->request->getQueryString($page);
-
-        return $url . '?' . $params;
+        return $this->url . '?' . $params;
     }
 
-    /**
-     * Get the paginator instance.
-     * @phpstan-return Paginator<Entity>
-     */
-    public function getPaginator(): Paginator
+    public function __serialize(): array 
     {
-        return $this->paginator;
+        return [
+            'total' => $this->total,
+            'url' => $this->url,
+            ...$this->request->getPageDetails()->getParamsArray(),
+            ...$this->request->getIncludes()->getParamsArray(),
+            ...$this->request->getSortDetails()->getParamsArray(),
+            'filters' => $this->request->getFiltersDetails()->toArray(),
+            'fields' => $this->request->getFields()->toArray(),
+            'excludes' => $this->request->getExcludes()->toArray(),
+        ];
     }
 
-    /**
-     * Get the the route generator.
-     *
-     * @return callable
-     */
-    public function getRouteGenerator()
+    public function __unserialize(array $data): void
     {
-        return $this->routeGenerator;
+        $this->total = $data['total'];
+        $this->url = $data['url'];
+        unset($data['total']);
+        unset($data['url']);
+        $this->request = RequestParams::fromArray($data);
     }
 }
