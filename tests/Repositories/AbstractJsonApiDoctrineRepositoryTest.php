@@ -118,7 +118,7 @@ class AbstractJsonApiDoctrineRepositoryTest extends \DoctrineJsonApiTestCase
     public function test_it_adds_a_new_entity_to_the_database(): void
     {
         $newEntity = new ExampleEntity('99', 'Example Entity 99');
-        $this->exampleRepository->add($newEntity);
+        $this->exampleRepository->save($newEntity);
         $this->exampleRepository->clear();
 
         $foundEntity = $this->exampleRepository->findById('99');
@@ -131,7 +131,7 @@ class AbstractJsonApiDoctrineRepositoryTest extends \DoctrineJsonApiTestCase
         $this->assertInstanceOf(ExampleEntity::class, $entity);
 
         $entity->setName('Updated Name');
-        $this->exampleRepository->update($entity);
+        $this->exampleRepository->save($entity);
         $this->exampleRepository->clear();
 
         $updatedEntity = $this->exampleRepository->findById('1');

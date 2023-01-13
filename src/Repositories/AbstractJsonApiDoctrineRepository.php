@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\Mapping\MappingException;
+use Giadc\DoctrineJsonApi\Filters\FilterManager;
 use Giadc\DoctrineJsonApi\Pagination\FractalDoctrinePaginatorAdapter;
 use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\Pagination;
@@ -30,6 +31,8 @@ abstract class AbstractJsonApiDoctrineRepository
     protected string $class;
 
     protected EntityManager $em;
+
+    protected FilterManager|null $filters = null;
 
     /**
      * Get the default Sorting for the repository.
@@ -147,44 +150,11 @@ abstract class AbstractJsonApiDoctrineRepository
     }
 
     /**
-     * Updates or creates an Entity.
+     * Saves an Entity to the database.
      *
      * @phpstan-param Entity $entity
      */
-    public function createOrUpdate(object $entity): void
-    {
-        $this->isValidEntity($entity);
-
-        $e = $this->findById($entity->id());
-
-        if ($e == null) {
-            $this->add($entity);
-        } else {
-            $this->update($entity);
-        }
-    }
-
-    /**
-     * Update an existing Entity.
-     *
-     * @phpstan-param Entity $entity
-     */
-    public function update(object $entity, bool $mute = false): void
-    {
-        $this->isValidEntity($entity);
-        $this->em->merge($entity);
-
-        if (!$mute) {
-            $this->em->flush();
-        }
-    }
-
-    /**
-     * Add a new Entity to the database.
-     *
-     * @phpstan-param Entity $entity
-     */
-    public function add(object $entity, bool $mute = false): void
+    public function save(object $entity, bool $mute = false): void
     {
         $this->isValidEntity($entity);
         $this->em->persist($entity);
