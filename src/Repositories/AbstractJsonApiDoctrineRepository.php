@@ -31,9 +31,6 @@ abstract class AbstractJsonApiDoctrineRepository
 
     protected EntityManager $em;
 
-    /** @phpstan-var \Giadc\DoctrineJsonApi\Filters\FilterManager|null */
-    protected $filters;
-
     /**
      * Get the default Sorting for the repository.
      *

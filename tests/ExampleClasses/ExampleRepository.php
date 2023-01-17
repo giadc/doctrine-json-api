@@ -19,7 +19,7 @@ class ExampleRepository extends JsonApiRepository implements
 
     protected string $class;
 
-    protected ExampleFilters $filters;
+    protected ?ExampleFilters $filters;
 
     /**
      * Create a new ExampleDoctrineRepository
