@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\Mapping\MappingException;
-use Giadc\DoctrineJsonApi\Filters\FilterManager;
 use Giadc\DoctrineJsonApi\Pagination\FractalDoctrinePaginatorAdapter;
 use Giadc\JsonApiRequest\Requests\Includes;
 use Giadc\JsonApiRequest\Requests\Pagination;
@@ -32,7 +31,8 @@ abstract class AbstractJsonApiDoctrineRepository
 
     protected EntityManager $em;
 
-    protected FilterManager|null $filters = null;
+    /** @phpstan-var \Giadc\DoctrineJsonApi\Filters\FilterManager|null */
+    protected $filters;
 
     /**
      * Get the default Sorting for the repository.
