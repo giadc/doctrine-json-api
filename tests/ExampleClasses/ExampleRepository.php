@@ -3,7 +3,6 @@
 namespace Giadc\DoctrineJsonApi\Tests;
 
 use Doctrine\ORM\EntityManager;
-use Giadc\DoctrineJsonApi\Filters\FilterManager;
 use Giadc\DoctrineJsonApi\Repositories\AbstractJsonApiRepositoryInterface as JsonApiInterface;
 use Giadc\DoctrineJsonApi\Repositories\AbstractJsonApiDoctrineRepository as JsonApiRepository;
 use Giadc\DoctrineJsonApi\Tests\ExampleEntity;
@@ -20,7 +19,7 @@ class ExampleRepository extends JsonApiRepository implements
 
     protected string $class;
 
-    protected ?FilterManager $filters;
+    protected ExampleFilters $filters;
 
     /**
      * Create a new ExampleDoctrineRepository
