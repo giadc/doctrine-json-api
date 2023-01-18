@@ -147,46 +147,13 @@ abstract class AbstractJsonApiDoctrineRepository
     }
 
     /**
-     * Updates or creates an Entity.
+     * Saves an Entity to the database.
      *
      * @phpstan-param Entity $entity
      */
-    public function createOrUpdate(object $entity): void
+    public function save(object $entity, bool $mute = false): void
     {
-        $this->isValidEntity($entity);
-
-        $e = $this->findById($entity->id());
-
-        if ($e == null) {
-            $this->add($entity);
-        } else {
-            $this->update($entity);
-        }
-    }
-
-    /**
-     * Update an existing Entity.
-     *
-     * @phpstan-param Entity $entity
-     */
-    public function update(object $entity, bool $mute = false): void
-    {
-        $this->isValidEntity($entity);
-        $this->em->merge($entity);
-
-        if (!$mute) {
-            $this->em->flush();
-        }
-    }
-
-    /**
-     * Add a new Entity to the database.
-     *
-     * @phpstan-param Entity $entity
-     */
-    public function add(object $entity, bool $mute = false): void
-    {
-        $this->isValidEntity($entity);
+        $this->assertValidEntity($entity);
         $this->em->persist($entity);
 
         if (!$mute) {
@@ -201,7 +168,7 @@ abstract class AbstractJsonApiDoctrineRepository
      */
     public function delete(object $entity, bool $mute = false): void
     {
-        $this->isValidEntity($entity);
+        $this->assertValidEntity($entity);
         $this->em->remove($entity);
 
         if (!$mute) {
@@ -231,7 +198,7 @@ abstract class AbstractJsonApiDoctrineRepository
      *
      * @phpstan-param  Entity $entity
      */
-    protected function isValidEntity(object $entity): void
+    protected function assertValidEntity(object $entity): void
     {
         if (!is_a($entity, $this->class)) {
             throw new \Exception('Invalid Entity: ' . get_class($entity));

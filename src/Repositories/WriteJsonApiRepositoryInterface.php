@@ -10,25 +10,11 @@ namespace Giadc\DoctrineJsonApi\Repositories;
 interface WriteJsonApiRepositoryInterface
 {
     /**
-     * Updates or creates an Entity.
+     * Saves an Entity to the database.
      *
      * @phpstan-param Entity $entity
      */
-    public function createOrUpdate(object $entity): void;
-
-    /**
-     * Update an existing Entity.
-     *
-     * @phpstan-param Entity $entity
-     */
-    public function update(object $entity, bool $mute = false): void;
-
-    /**
-     * Add a new Entity to the database.
-     *
-     * @phpstan-param Entity $entity
-     */
-    public function add(object $entity, bool $mute = false): void;
+    public function save(object $entity, bool $mute = false): void;
 
     /**
      * Delete an Entity from the database.
