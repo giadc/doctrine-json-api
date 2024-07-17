@@ -12,21 +12,11 @@
             "email": "rmarganti@gannett.com"
         }
     ],
-    "repositories": [
-        {
-            "type": "path",
-            "url": "/Users/dhill2/repos/php/packages/json-api-response"
-        },
-        {
-            "type": "path",
-            "url": "/Users/dhill2/repos/php/packages/json-api-request"
-        }
-    ],
     "require": {
         "php": ">=8.2",
         "doctrine/orm": "^2.14",
-        "giadc/json-api-request": "dev-master",
-        "giadc/json-api-response": "dev-master",
+        "giadc/json-api-request": "dev-php83",
+        "giadc/json-api-response": "dev-php83",
         "symfony/cache": "^7.0"
     },
     "require-dev": {
