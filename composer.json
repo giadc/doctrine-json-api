@@ -12,12 +12,22 @@
             "email": "rmarganti@gannett.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "/Users/dhill2/repos/php/packages/json-api-response"
+        },
+        {
+            "type": "path",
+            "url": "/Users/dhill2/repos/php/packages/json-api-request"
+        }
+    ],
     "require": {
-        "php": ">=8.1",
-        "doctrine/orm": "^2.11",
-        "giadc/json-api-request": "~3.0.3",
-        "giadc/json-api-response": "~3.0.0",
-        "symfony/cache": "^6.0"
+        "php": ">=8.2",
+        "doctrine/orm": "^2.14",
+        "giadc/json-api-request": "dev-master",
+        "giadc/json-api-response": "dev-master",
+        "symfony/cache": "^7.0"
     },
     "require-dev": {
         "doctrine/data-fixtures": "^1.4",
@@ -26,7 +36,7 @@
         "phpstan/phpstan-doctrine": "^1.2",
         "phpstan/phpstan-mockery": "^1.0",
         "phpstan/phpstan-phpunit": "^1.0",
-        "phpunit/phpunit": "^8.4",
+        "phpunit/phpunit": "^10.0",
         "symfony/yaml": "^5.0"
     },
     "autoload": {
