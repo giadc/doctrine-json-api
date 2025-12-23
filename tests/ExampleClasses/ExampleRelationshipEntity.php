@@ -2,12 +2,20 @@
 
 namespace Giadc\DoctrineJsonApi\Tests;
 
+use Doctrine\ORM\Mapping as ORM;
 use Giadc\JsonApiResponse\Interfaces\JsonApiResource;
 
+#[ORM\Entity]
+#[ORM\Table(name: 'example_relationship_entities')]
 class ExampleRelationshipEntity implements JsonApiResource
 {
+    #[ORM\Id]
+    #[ORM\Column(type: 'string', length: 2)]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     private string $id;
 
+    #[ORM\ManyToOne(targetEntity: ExampleEntity::class, inversedBy: 'relationships')]
+    #[ORM\JoinColumn(name: 'parent_id', referencedColumnName: 'id')]
     private ?ExampleEntity $parent = null;
 
     public function __construct(string $id)

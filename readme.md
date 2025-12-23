@@ -1,5 +1,6 @@
+asdf
 # JSON API Request
-A package for automating pagination, filtering, sorting, and includes when working with 
+A package for automating pagination, filtering, sorting, and includes when working with
 [Doctrine](http://www.doctrine-project.org/) and the [JSON API](http://jsonapi.org/) standard.
 
 ## Installation
@@ -76,7 +77,7 @@ RoleRepositoryInterface
 
     /** @var string */
     protected $class;
-    
+
     /** @var BananaFilter **/
     protected $filters;
 

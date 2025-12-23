@@ -1,7 +1,8 @@
 <?php
 
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\ORMSetup;
 
 class EntityManagerFactory
 {
@@ -12,16 +13,17 @@ class EntityManagerFactory
      */
     public static function createEntityManager()
     {
-        $paths            = [__DIR__ . '/yaml'];
+        $paths            = [__DIR__ . '/ExampleClasses'];
         $isDevMode        = true;
         $connectionConfig = [
             'driver'   => 'pdo_sqlite',
-            'database' => ':memory:',
-            'prefix'   => '',
+            'memory'   => true,
         ];
 
-        $config = Setup::createYAMLMetadataConfiguration($paths, $isDevMode);
+        $config = ORMSetup::createAttributeMetadataConfiguration($paths, $isDevMode);
+        $config->enableNativeLazyObjects(true);
+        $connection = DriverManager::getConnection($connectionConfig, $config);
 
-        return EntityManager::create($connectionConfig, $config);
+        return new EntityManager($connection, $config);
     }
 }
