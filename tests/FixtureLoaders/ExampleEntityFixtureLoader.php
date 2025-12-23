@@ -7,7 +7,7 @@ use Giadc\DoctrineJsonApi\Tests\ExampleRelationshipEntity;
 
 class ExampleEntityFixtureLoader implements FixtureInterface
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         foreach ($this->getEntities() as $entity) {
             $manager->persist($entity);

@@ -5,23 +5,35 @@ namespace Giadc\DoctrineJsonApi\Tests;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Giadc\JsonApiResponse\Interfaces\JsonApiResource;
 
+#[ORM\Entity]
+#[ORM\Table(name: 'example_entities')]
 class ExampleEntity implements JsonApiResource
 {
+    #[ORM\Id]
+    #[ORM\Column(type: 'string', length: 2)]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
     private string $id;
 
+    #[ORM\Column(type: 'string', length: 255)]
     private string $name;
 
+    #[ORM\Column(name: 'deleted_at', type: 'datetime', nullable: true)]
     private ?DateTime $deletedAt = null;
 
+    #[ORM\Column(type: 'integer')]
     private int $width;
 
+    #[ORM\Column(type: 'integer')]
     private int $height;
 
+    #[ORM\Column(name: 'run_date', type: 'datetime')]
     private DateTime $runDate;
 
     /** @phpstan-var Collection<int, ExampleRelationshipEntity> **/
+    #[ORM\OneToMany(targetEntity: ExampleRelationshipEntity::class, mappedBy: 'parent', cascade: ['persist'])]
     private Collection $relationships;
 
     public function __construct(
