@@ -17,7 +17,7 @@
         "doctrine/orm": "^3.6",
         "giadc/json-api-request": "^3.0.4",
         "giadc/json-api-response": "dev-php-8.5",
-        "symfony/cache": "^8.0"
+        "symfony/cache": "^6.0|^7.0|^8.0"
     },
     "require-dev": {
         "doctrine/data-fixtures": "^2.2",
